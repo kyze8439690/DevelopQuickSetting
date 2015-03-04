@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">DevelopQuickSetting</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="enable_adb">Enable ADB</string>
+    <string name="update_checkbox_state_failed">Update developer setting state failed.</string>
+    <string name="show_layout_border">Show Layout Border</string>
+    <string name="set_property_failed">Set property failed.</string>
+    <string name="set_property_success_prompt">Set property success, press kill debug application and restart it to see the result.</string>
+    <string name="display_overdraw">Display Overdraw</string>
+    <string name="profile_gpu_render">Profile GPU Rendering</string>
+    <string name="immediately_destroy_activities">Immediately destroy activities</string>
+</resources>
