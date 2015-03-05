@@ -8,8 +8,11 @@ import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -27,7 +30,7 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
 
     private static final String TAG = MainActivity.class.getName();
 
-    @InjectView(R.id.adb) CheckBox mAdbCheckBox;
+    private Switch mAdbSwitch;
     @InjectView(R.id.layout_border) CheckBox mLayoutBorderCheckBox;
     @InjectView(R.id.overdraw) CheckBox mOverdrawCheckBox;
     @InjectView(R.id.profile_gpu) CheckBox mProfileGPUCheckBox;
@@ -53,8 +56,11 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     private void updateCheckBoxState() {
         try {
             //adb
-            int isAdbChecked = Settings.Global.getInt(getContentResolver(), Settings.Global.ADB_ENABLED);
-            mAdbCheckBox.setChecked(isAdbChecked == 1);
+            if (mAdbSwitch != null) {
+                int isAdbChecked = Settings.Global.getInt(getContentResolver(), Settings.Global.ADB_ENABLED);
+                mAdbSwitch.setChecked(isAdbChecked == 1);
+                setOtherCheckboxEnabled(isAdbChecked != 0);
+            }
 
             //debug layout
             Process process = Runtime.getRuntime().exec("getprop " + PropertyKey.DEBUG_LAYOUT_PROPERTY);
@@ -97,7 +103,9 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     }
 
     private void setCheckBoxClickListener() {
-        mAdbCheckBox.setOnCheckedChangeListener(this);
+        if (mAdbSwitch != null) {
+            mAdbSwitch.setOnCheckedChangeListener(this);
+        }
         mLayoutBorderCheckBox.setOnCheckedChangeListener(this);
         mOverdrawCheckBox.setOnCheckedChangeListener(this);
         mProfileGPUCheckBox.setOnCheckedChangeListener(this);
@@ -105,7 +113,9 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     }
 
     private void removeCheckBoxClickListener() {
-        mAdbCheckBox.setOnCheckedChangeListener(null);
+        if (mAdbSwitch != null) {
+            mAdbSwitch.setOnCheckedChangeListener(null);
+        }
         mLayoutBorderCheckBox.setOnCheckedChangeListener(null);
         mOverdrawCheckBox.setOnCheckedChangeListener(null);
         mProfileGPUCheckBox.setOnCheckedChangeListener(null);
@@ -122,7 +132,7 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         try {
-            if (buttonView.equals(mAdbCheckBox)) {
+            if (buttonView.equals(mAdbSwitch)) {
                 //adb
                 Settings.Global.putInt(getContentResolver(), Settings.Global.ADB_ENABLED, isChecked ? 1 : 0);
                 setOtherCheckboxEnabled(isChecked);
@@ -226,4 +236,19 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.adb);
+        mAdbSwitch = (Switch) item.getActionView().findViewById(R.id.adb_switch);
+        mAdbSwitch.setOnCheckedChangeListener(this);
+        try {
+            int isAdbChecked = Settings.Global.getInt(getContentResolver(), Settings.Global.ADB_ENABLED);
+            mAdbSwitch.setChecked(isAdbChecked == 1);
+            setOtherCheckboxEnabled(isAdbChecked != 0);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }

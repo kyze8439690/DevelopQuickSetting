@@ -10,13 +10,6 @@
                 tools:context=".MainActivity">
 
     <CheckBox
-        android:id="@+id/adb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/enable_adb"
-        />
-
-    <CheckBox
         android:id="@+id/layout_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
