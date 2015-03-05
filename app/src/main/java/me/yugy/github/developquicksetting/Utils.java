@@ -7,9 +7,9 @@ import android.widget.Toast;
 
 public class Utils {
 
-    public static void toast(Context context, @StringRes int resId) {
-        Toast.makeText(context, resId, Toast.LENGTH_SHORT).show();
-    }
+//    public static void toast(Context context, @StringRes int resId) {
+//        Toast.makeText(context, resId, Toast.LENGTH_SHORT).show();
+//    }
 
     public static String getApkInstallPath(Context context) {
         try {
