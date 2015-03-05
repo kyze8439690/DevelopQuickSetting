@@ -5,7 +5,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -99,7 +98,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
             mImmediatelyDestroyActivitiesPreference.setChecked(isAlwaysDestroyActivitiesChecked == 1);
         } catch (Settings.SettingNotFoundException | IOException e) {
             e.printStackTrace();
-            Toast.makeText(getActivity(), R.string.update_checkbox_state_failed, Toast.LENGTH_SHORT).show();
+            Utils.toast(getActivity(), R.string.update_checkbox_state_failed);
         }
     }
 
@@ -124,10 +123,10 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 process.waitFor();
                 output.close();
                 if (process.exitValue() == 0) {
-                    Toast.makeText(getActivity(), R.string.set_property_success_prompt, Toast.LENGTH_SHORT).show();
+                    Utils.toast(getActivity(), R.string.set_property_success_prompt);
                     mLayoutBorderPreference.setChecked(value);
                 } else {
-                    Toast.makeText(getActivity(), R.string.set_property_failed, Toast.LENGTH_SHORT).show();
+                    Utils.toast(getActivity(), R.string.set_property_failed);
                 }
             } else if (preference.equals(mDisplayOverdrawPreference)) {
                 //overdraw
@@ -139,10 +138,10 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 process.waitFor();
                 output.close();
                 if (process.exitValue() == 0) {
-                    Toast.makeText(getActivity(), R.string.set_property_success_prompt, Toast.LENGTH_SHORT).show();
+                    Utils.toast(getActivity(), R.string.set_property_success_prompt);
                     mDisplayOverdrawPreference.setChecked(value);
                 } else {
-                    Toast.makeText(getActivity(), R.string.set_property_failed, Toast.LENGTH_SHORT).show();
+                    Utils.toast(getActivity(), R.string.set_property_failed);
                 }
             } else if (preference.equals(mProfileGPURenderingPreference)) {
                 //profile gpu rendering
@@ -154,10 +153,10 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 process.waitFor();
                 output.close();
                 if (process.exitValue() == 0) {
-                    Toast.makeText(getActivity(), R.string.set_property_success_prompt, Toast.LENGTH_SHORT).show();
+                    Utils.toast(getActivity(), R.string.set_property_success_prompt);
                     mProfileGPURenderingPreference.setChecked(value);
                 } else {
-                    Toast.makeText(getActivity(), R.string.set_property_failed, Toast.LENGTH_SHORT).show();
+                    Utils.toast(getActivity(), R.string.set_property_failed);
                 }
             } else if (preference.equals(mImmediatelyDestroyActivitiesPreference)) {
                 //always destroy activities
@@ -172,17 +171,17 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
 //                setAlwaysFinishMethod.invoke(activityManagerNativeInstance, isChecked);
 
                 if (Settings.Global.putInt(getActivity().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, value ? 1 : 0)) {
-                    Toast.makeText(getActivity(), R.string.set_property_success_prompt, Toast.LENGTH_SHORT).show();
+                    Utils.toast(getActivity(), R.string.set_property_success_prompt);
                     mImmediatelyDestroyActivitiesPreference.setChecked(value);
                 } else {
-                    Toast.makeText(getActivity(), R.string.set_property_failed, Toast.LENGTH_SHORT).show();
+                    Utils.toast(getActivity(), R.string.set_property_failed);
                 }
 
             }
             pokeSystemProperties();
         } catch (IOException | InterruptedException e ) {
             e.printStackTrace();
-            Toast.makeText(getActivity(), R.string.set_property_failed, Toast.LENGTH_SHORT).show();
+            Utils.toast(getActivity(), R.string.set_property_failed);
         }
         return false;
     }

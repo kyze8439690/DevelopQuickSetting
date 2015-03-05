@@ -1,27 +1,15 @@
 package me.yugy.github.developquicksetting;
 
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 
 public class MainActivity extends ActionBarActivity {
-
-    private static final String TAG = MainActivity.class.getName();
 
     private MainFragment mFragment;
 
@@ -37,6 +25,12 @@ public class MainActivity extends ActionBarActivity {
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction().add(R.id.container, mFragment).commit();
         }
+
+        //check install path
+        if (Utils.isAppInstallInData(this)) {
+            InstallerActivity.launch(this);
+            finish();
+        }
     }
 
     @Override
@@ -44,15 +38,6 @@ public class MainActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.adb);
         Switch adbSwitch = (Switch) item.getActionView().findViewById(R.id.adb_switch);
-        adbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Settings.Global.putInt(getContentResolver(), Settings.Global.ADB_ENABLED, isChecked ? 1 : 0);
-                if (mFragment != null) {
-                    mFragment.updatePreferencesState();
-                }
-            }
-        });
         try {
             int isAdbChecked = Settings.Global.getInt(getContentResolver(), Settings.Global.ADB_ENABLED);
             adbSwitch.setChecked(isAdbChecked == 1);
@@ -62,6 +47,15 @@ public class MainActivity extends ActionBarActivity {
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
+        adbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Settings.Global.putInt(getContentResolver(), Settings.Global.ADB_ENABLED, isChecked ? 1 : 0);
+                if (mFragment != null) {
+                    mFragment.updatePreferencesState();
+                }
+            }
+        });
         return true;
     }
 
