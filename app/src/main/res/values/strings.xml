@@ -11,4 +11,10 @@
     <string name="display_overdraw">Display Overdraw</string>
     <string name="profile_gpu_render">Profile GPU Rendering</string>
     <string name="immediately_destroy_activities">Immediately destroy activities</string>
+    <string name="develop_settings">Develop Settings</string>
+
+    <string name="key_layout_border">layout_border</string>
+    <string name="key_display_overdraw">display_overdraw</string>
+    <string name="key_profile_gpu_rendering">profile_gpu_rendering</string>
+    <string name="key_always_destroy_activities">always_destroy_activities</string>
 </resources>

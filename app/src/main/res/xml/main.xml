@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/develop_settings"
+        >
+
+        <CheckBoxPreference
+            android:key="@string/key_layout_border"
+            android:title="@string/show_layout_border"
+            />
+
+        <CheckBoxPreference
+            android:key="@string/key_display_overdraw"
+            android:title="@string/display_overdraw"
+            />
+
+        <CheckBoxPreference
+            android:key="@string/key_profile_gpu_rendering"
+            android:title="@string/profile_gpu_render"
+            />
+
+        <CheckBoxPreference
+            android:key="@string/key_always_destroy_activities"
+            android:title="@string/immediately_destroy_activities"
+            />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
