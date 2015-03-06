@@ -66,6 +66,9 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
     }
 
     public void updatePreferencesState() {
+        if (getActivity() != null) {
+            getActivity().invalidateOptionsMenu();
+        }
         try {
             //adb
             if (getActivity() != null) {
