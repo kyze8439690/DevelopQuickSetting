@@ -82,7 +82,9 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 builder.append(line);
             }
             String result = builder.toString();
-            mLayoutBorderPreference.setChecked("true".equals(result));
+            if (mLayoutBorderPreference != null) {
+                mLayoutBorderPreference.setChecked("true".equals(result));
+            }
 
             //overdraw
             process = Runtime.getRuntime().exec("getprop " + Property.getDebugOverdrawPropertyKey());
@@ -92,7 +94,9 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 builder.append(line);
             }
             result = builder.toString();
-            mDisplayOverdrawPreference.setChecked(Property.getDebugOverdrawPropertyEnabledValue().equals(result));
+            if (mDisplayOverdrawPreference != null) {
+                mDisplayOverdrawPreference.setChecked(Property.getDebugOverdrawPropertyEnabledValue().equals(result));
+            }
 
             //profile gpu rendering
             process = Runtime.getRuntime().exec("getprop " + Property.PROFILE_PROPERTY);
@@ -102,11 +106,15 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 builder.append(line);
             }
             result = builder.toString();
-            mProfileGPURenderingPreference.setChecked("visual_bars".equals(result));
+            if (mProfileGPURenderingPreference != null) {
+                mProfileGPURenderingPreference.setChecked("visual_bars".equals(result));
+            }
 
             //always destroy activities
-            int isAlwaysDestroyActivitiesChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
-            mImmediatelyDestroyActivitiesPreference.setChecked(isAlwaysDestroyActivitiesChecked == 1);
+            if (getActivity() != null) {
+                int isAlwaysDestroyActivitiesChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
+                mImmediatelyDestroyActivitiesPreference.setChecked(isAlwaysDestroyActivitiesChecked == 1);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             ((MainActivity)getActivity()).showSnackBar(R.string.update_checkbox_state_failed);

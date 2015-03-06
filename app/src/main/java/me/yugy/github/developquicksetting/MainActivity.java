@@ -1,5 +1,7 @@
 package me.yugy.github.developquicksetting;
 
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.StringRes;
@@ -12,6 +14,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -96,4 +100,20 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.open_developer_settings:
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
+                List<ResolveInfo> resolveInfoList = getPackageManager().queryIntentActivities(intent, 0);
+                if (resolveInfoList.size() > 0) {
+                    startActivity(intent);
+                } else {
+                    showSnackBar(R.string.can_not_open_developer_setting);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

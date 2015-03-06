@@ -13,14 +13,14 @@
           app:showAsAction="never"
           />
 
-    <item android:id="@+id/setting"
-          android:title="@string/setting"
+    <item android:id="@+id/uninstall"
+          android:title="@string/uninstall"
           app:showAsAction="never"
           />
 
     <item android:id="@+id/about"
           android:title="@string/about"
           app:showAsAction="never"
-        />
+          />
 
 </menu>

@@ -24,6 +24,7 @@
     <string name="exit_info">It seems that the installation is finished. Now you can reboot your device and see whether it works.</string>
     <string name="preference_category_key">preference_category</string>
     <string name="about">About</string>
-    <string name="setting">Setting</string>
+    <string name="uninstall">Uninstall</string>
     <string name="open_developer_settings">Open developer settings</string>
+    <string name="can_not_open_developer_setting">Can not open developer settings</string>
 </resources>
