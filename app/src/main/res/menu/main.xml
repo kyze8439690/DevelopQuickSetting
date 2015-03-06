@@ -8,8 +8,8 @@
           app:actionLayout="@layout/adb_switch"
           />
 
-    <item android:id="@+id/about"
-          android:title="@string/about"
+    <item android:id="@+id/open_developer_settings"
+          android:title="@string/open_developer_settings"
           app:showAsAction="never"
           />
 
@@ -17,5 +17,10 @@
           android:title="@string/setting"
           app:showAsAction="never"
           />
+
+    <item android:id="@+id/about"
+          android:title="@string/about"
+          app:showAsAction="never"
+        />
 
 </menu>

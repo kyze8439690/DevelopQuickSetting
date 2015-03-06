@@ -25,4 +25,5 @@
     <string name="preference_category_key">preference_category</string>
     <string name="about">About</string>
     <string name="setting">Setting</string>
+    <string name="open_developer_settings">Open developer settings</string>
 </resources>

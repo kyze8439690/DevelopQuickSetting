@@ -68,8 +68,10 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
     public void updatePreferencesState() {
         try {
             //adb
-            int isAdbChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ADB_ENABLED, 0);
-            setOtherPreferencesEnabled(isAdbChecked != 0);
+            if (getActivity() != null) {
+                int isAdbChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ADB_ENABLED, 0);
+                setOtherPreferencesEnabled(isAdbChecked != 0);
+            }
 
             //debug layout
             Process process = Runtime.getRuntime().exec("getprop " + Property.DEBUG_LAYOUT_PROPERTY);
