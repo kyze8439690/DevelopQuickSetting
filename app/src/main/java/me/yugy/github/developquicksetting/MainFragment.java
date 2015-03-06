@@ -1,8 +1,10 @@
 package me.yugy.github.developquicksetting;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
 
@@ -23,6 +25,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.main);
         findPreferences();
+        setPreferencesVisibility();
     }
 
     @Override
@@ -40,6 +43,12 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         mDisplayOverdrawPreference = (CheckBoxPreference) findPreference(getString(R.string.key_display_overdraw));
         mProfileGPURenderingPreference = (CheckBoxPreference) findPreference(getString(R.string.key_profile_gpu_rendering));
         mImmediatelyDestroyActivitiesPreference = (CheckBoxPreference) findPreference(getString(R.string.key_always_destroy_activities));
+    }
+
+    private void setPreferencesVisibility() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            ((PreferenceCategory)findPreference(getString(R.string.preference_category_key))).removePreference(mProfileGPURenderingPreference);
+        }
     }
 
     private void removePreferencesListener() {
