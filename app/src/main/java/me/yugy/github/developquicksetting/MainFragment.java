@@ -59,11 +59,11 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
     public void updatePreferencesState() {
         try {
             //adb
-            int isAdbChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ADB_ENABLED);
+            int isAdbChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ADB_ENABLED, 0);
             setOtherPreferencesEnabled(isAdbChecked != 0);
 
             //debug layout
-            Process process = Runtime.getRuntime().exec("getprop " + PropertyKey.DEBUG_LAYOUT_PROPERTY);
+            Process process = Runtime.getRuntime().exec("getprop " + Property.DEBUG_LAYOUT_PROPERTY);
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder builder = new StringBuilder();
             String line;
@@ -74,29 +74,29 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
             mLayoutBorderPreference.setChecked("true".equals(result));
 
             //overdraw
-            process = Runtime.getRuntime().exec("getprop " + PropertyKey.DEBUG_OVERDRAW_PROPERTY);
+            process = Runtime.getRuntime().exec("getprop " + Property.getDebugOverdrawPropertyKey());
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             builder = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
             result = builder.toString();
-            mDisplayOverdrawPreference.setChecked(!"false".equals(result));
+            mDisplayOverdrawPreference.setChecked(Property.getDebugOverdrawPropertyEnabledValue().equals(result));
 
             //profile gpu rendering
-            process = Runtime.getRuntime().exec("getprop " + PropertyKey.PROFILE_PROPERTY);
+            process = Runtime.getRuntime().exec("getprop " + Property.PROFILE_PROPERTY);
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             builder = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
             result = builder.toString();
-            mProfileGPURenderingPreference.setChecked(!"false".equals(result));
+            mProfileGPURenderingPreference.setChecked("visual_bars".equals(result));
 
             //always destroy activities
-            int isAlwaysDestroyActivitiesChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES);
+            int isAlwaysDestroyActivitiesChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
             mImmediatelyDestroyActivitiesPreference.setChecked(isAlwaysDestroyActivitiesChecked == 1);
-        } catch (Settings.SettingNotFoundException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             ((MainActivity)getActivity()).showSnackBar(R.string.update_checkbox_state_failed);
         }
@@ -117,7 +117,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 //debug.layout
                 Process process = Runtime.getRuntime().exec("su");
                 DataOutputStream output = new DataOutputStream(process.getOutputStream());
-                output.writeBytes("setprop " + PropertyKey.DEBUG_LAYOUT_PROPERTY + " " + (value ? "true" : "false") + "\n");
+                output.writeBytes("setprop " + Property.DEBUG_LAYOUT_PROPERTY + " " + (value ? "true" : "false") + "\n");
                 output.writeBytes("exit\n");
                 output.flush();
                 process.waitFor();
@@ -132,7 +132,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 //overdraw
                 Process process = Runtime.getRuntime().exec("su");
                 DataOutputStream output = new DataOutputStream(process.getOutputStream());
-                output.writeBytes("setprop " + PropertyKey.DEBUG_OVERDRAW_PROPERTY + " " + (value ? "show" : "false") + "\n");
+                output.writeBytes("setprop " + Property.getDebugOverdrawPropertyKey() + " " + (value ? Property.getDebugOverdrawPropertyEnabledValue() : "false") + "\n");
                 output.writeBytes("exit\n");
                 output.flush();
                 process.waitFor();
@@ -147,7 +147,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 //profile gpu rendering
                 Process process = Runtime.getRuntime().exec("su");
                 DataOutputStream output = new DataOutputStream(process.getOutputStream());
-                output.writeBytes("setprop " + PropertyKey.PROFILE_PROPERTY + " " + (value ? "visual_bars" : "false") + "\n");
+                output.writeBytes("setprop " + Property.PROFILE_PROPERTY + " " + (value ? "visual_bars" : "false") + "\n");
                 output.writeBytes("exit\n");
                 output.flush();
                 process.waitFor();

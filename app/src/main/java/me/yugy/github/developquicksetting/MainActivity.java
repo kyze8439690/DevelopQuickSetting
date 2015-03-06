@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -78,15 +78,11 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.adb);
-        Switch adbSwitch = (Switch) item.getActionView().findViewById(R.id.adb_switch);
-        try {
-            int isAdbChecked = Settings.Global.getInt(getContentResolver(), Settings.Global.ADB_ENABLED);
-            adbSwitch.setChecked(isAdbChecked == 1);
-            if (mFragment != null) {
-                mFragment.updatePreferencesState();
-            }
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
+        SwitchCompat adbSwitch = (SwitchCompat) item.getActionView().findViewById(R.id.adb_switch);
+        int isAdbChecked = Settings.Global.getInt(getContentResolver(), Settings.Global.ADB_ENABLED, 0);
+        adbSwitch.setChecked(isAdbChecked == 1);
+        if (mFragment != null) {
+            mFragment.updatePreferencesState();
         }
         adbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
