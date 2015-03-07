@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="appwidget_indicator_disabled">#ff868e91</color>
+    <color name="appwidget_indicator_enabled">#ff92d3ce</color>
+</resources>

@@ -3,9 +3,7 @@ package me.yugy.github.developquicksetting;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -20,18 +18,37 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
             try {
                 //update widget state
-                views.setImageViewResource(R.id.layout_border,
-                        DeveloperSettings.isDebugLayoutEnabled() ?
-                                R.drawable.ic_debug_layout_enabled : R.drawable.ic_debug_layout_disabled);
-                views.setImageViewResource(R.id.overdraw,
-                        DeveloperSettings.isShowOverdrawEnabled() ?
-                                R.drawable.ic_overdraw_enabled : R.drawable.ic_overdraw_disabled);
-                views.setImageViewResource(R.id.gpu_rendering,
-                        DeveloperSettings.isShowProfileGPURendering() ?
-                                R.drawable.ic_gpu_rendering_enabled : R.drawable.ic_gpu_rendering_disabled);
-                views.setImageViewResource(R.id.destroy_activities,
-                        DeveloperSettings.isImmediatelyDestroyActivities(context) ?
-                                R.drawable.ic_destroy_enabled : R.drawable.ic_destroy_disabled);
+                if (DeveloperSettings.isDebugLayoutEnabled()) {
+                    views.setImageViewResource(R.id.layout_border_image, R.drawable.ic_debug_layout_enabled);
+                    views.setImageViewResource(R.id.layout_border_indicator, R.color.appwidget_indicator_enabled);
+                } else {
+                    views.setImageViewResource(R.id.layout_border_image, R.drawable.ic_debug_layout_disabled);
+                    views.setImageViewResource(R.id.layout_border_indicator, R.color.appwidget_indicator_disabled);
+                }
+
+                if (DeveloperSettings.isShowOverdrawEnabled()) {
+                    views.setImageViewResource(R.id.overdraw_image, R.drawable.ic_overdraw_enabled);
+                    views.setImageViewResource(R.id.overdraw_indicator, R.color.appwidget_indicator_enabled);
+                } else {
+                    views.setImageViewResource(R.id.overdraw_image, R.drawable.ic_overdraw_disabled);
+                    views.setImageViewResource(R.id.overdraw_indicator, R.color.appwidget_indicator_disabled);
+                }
+
+                if (DeveloperSettings.isShowProfileGPURendering()) {
+                    views.setImageViewResource(R.id.gpu_rendering_image, R.drawable.ic_gpu_rendering_enabled);
+                    views.setImageViewResource(R.id.gpu_rendering_indicator, R.color.appwidget_indicator_enabled);
+                } else {
+                    views.setImageViewResource(R.id.gpu_rendering_image, R.drawable.ic_gpu_rendering_disabled);
+                    views.setImageViewResource(R.id.gpu_rendering_indicator, R.color.appwidget_indicator_disabled);
+                }
+
+                if (DeveloperSettings.isImmediatelyDestroyActivities(context)) {
+                    views.setImageViewResource(R.id.destroy_activities_image, R.drawable.ic_destroy_enabled);
+                    views.setImageViewResource(R.id.destroy_activities_indicator, R.color.appwidget_indicator_enabled);
+                } else {
+                    views.setImageViewResource(R.id.destroy_activities_image, R.drawable.ic_destroy_disabled);
+                    views.setImageViewResource(R.id.destroy_activities_indicator, R.color.appwidget_indicator_disabled);
+                }
 
                 //set widget click listener
                 views.setOnClickPendingIntent(R.id.layout_border, DevelopSettingsService.getPendingIntent(

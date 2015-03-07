@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="@drawable/appwidget_dark_bg"
+             android:background="@drawable/appwidget_bg_holo"
     >
 
     <LinearLayout
@@ -13,43 +13,117 @@
         android:visibility="gone"
         android:orientation="horizontal"
         tools:visibility="visible"
-        >
+        android:divider="@drawable/appwidget_divider"
+        android:showDividers="middle"
+        android:baselineAligned="false">
 
-        <ImageButton
+        <LinearLayout
             android:id="@+id/layout_border"
+            android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            android:src="@drawable/ic_debug_layout_disabled"
-            />
+            android:layout_height="match_parent"
+            android:background="@drawable/appwidget_button_left">
 
-        <ImageButton
+            <ImageView
+                android:id="@+id/layout_border_image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/ic_debug_layout_disabled"
+                />
+
+            <ImageView
+                android:id="@+id/layout_border_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:src="@color/appwidget_indicator_disabled"
+                android:scaleType="fitXY"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/overdraw"
+            android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            android:src="@drawable/ic_overdraw_disabled"
-            />
+            android:layout_height="match_parent"
+            android:background="@drawable/appwidget_button_center">
 
-        <ImageButton
+            <ImageView
+                android:id="@+id/overdraw_image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/ic_overdraw_disabled"
+                />
+
+            <ImageView
+                android:id="@+id/overdraw_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:src="@color/appwidget_indicator_disabled"
+                android:scaleType="fitXY"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/gpu_rendering"
+            android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            android:src="@drawable/ic_gpu_rendering_disabled"
-            />
+            android:layout_height="match_parent"
+            android:background="@drawable/appwidget_button_center">
 
-        <ImageButton
+            <ImageView
+                android:id="@+id/gpu_rendering_image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/ic_gpu_rendering_disabled"
+                />
+
+            <ImageView
+                android:id="@+id/gpu_rendering_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:src="@color/appwidget_indicator_disabled"
+                android:scaleType="fitXY"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/destroy_activities"
+            android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"
-            android:src="@drawable/ic_destroy_disabled"
-            />
+            android:layout_height="match_parent"
+            android:background="@drawable/appwidget_button_right">
+
+            <ImageView
+                android:id="@+id/destroy_activities_image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/ic_destroy_disabled"
+                />
+
+            <ImageView
+                android:id="@+id/destroy_activities_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:src="@color/appwidget_indicator_disabled"
+                android:scaleType="fitXY"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -58,6 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        tools:visibility="gone"
         />
 
 </FrameLayout>
