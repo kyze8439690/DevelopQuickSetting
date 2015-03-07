@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -29,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 

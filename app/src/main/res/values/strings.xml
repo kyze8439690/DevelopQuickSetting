@@ -27,4 +27,10 @@
     <string name="uninstall">Uninstall</string>
     <string name="open_developer_settings">Open developer settings</string>
     <string name="can_not_open_developer_setting">Can not open developer settings</string>
+
+    <!--widget string-->
+    <string name="widget_layout_border">LAYOUT</string>
+    <string name="widget_overdraw">OVERDRAW</string>
+    <string name="widget_gpu">GPU</string>
+    <string name="widget_destroy">DESTROY</string>
 </resources>

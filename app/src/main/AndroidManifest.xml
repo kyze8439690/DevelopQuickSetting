@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.SET_ALWAYS_FINISH" />
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,6 +29,16 @@
                   android:label="@string/installer_title"
                   android:screenOrientation="portrait"
                   />
+        
+        <receiver android:name=".DevelopWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/appwidget_info" />
+        </receiver>
+        <service android:name=".WidgetService" />
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="5aadd9d4ef0bfd1fd797e15f0cbcf3cc74aa044a"/>
     </application>
 
 </manifest>

@@ -6,12 +6,8 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.provider.Settings;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class MainFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener{
 
@@ -70,53 +66,29 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
             getActivity().invalidateOptionsMenu();
         }
         try {
-            //adb
+            //check adb enabled
             if (getActivity() != null) {
-                int isAdbChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ADB_ENABLED, 0);
-                setOtherPreferencesEnabled(isAdbChecked != 0);
+                setOtherPreferencesEnabled(DeveloperSettings.isAdbEnabled(getActivity()));
             }
 
             //debug layout
-            Process process = Runtime.getRuntime().exec("getprop " + Property.DEBUG_LAYOUT_PROPERTY);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder builder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-            }
-            String result = builder.toString();
             if (mLayoutBorderPreference != null) {
-                mLayoutBorderPreference.setChecked("true".equals(result));
+                mLayoutBorderPreference.setChecked(DeveloperSettings.isDebugLayoutEnabled());
             }
 
             //overdraw
-            process = Runtime.getRuntime().exec("getprop " + Property.getDebugOverdrawPropertyKey());
-            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            builder = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-            }
-            result = builder.toString();
             if (mDisplayOverdrawPreference != null) {
-                mDisplayOverdrawPreference.setChecked(Property.getDebugOverdrawPropertyEnabledValue().equals(result));
+                mDisplayOverdrawPreference.setChecked(DeveloperSettings.isShowOverdrawEnabled());
             }
 
             //profile gpu rendering
-            process = Runtime.getRuntime().exec("getprop " + Property.PROFILE_PROPERTY);
-            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            builder = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-            }
-            result = builder.toString();
             if (mProfileGPURenderingPreference != null) {
-                mProfileGPURenderingPreference.setChecked("visual_bars".equals(result));
+                mProfileGPURenderingPreference.setChecked(DeveloperSettings.isShowProfileGPURendering());
             }
 
             //always destroy activities
             if (getActivity() != null) {
-                int isAlwaysDestroyActivitiesChecked = Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
-                mImmediatelyDestroyActivitiesPreference.setChecked(isAlwaysDestroyActivitiesChecked == 1);
+                mImmediatelyDestroyActivitiesPreference.setChecked(DeveloperSettings.isImmediatelyDestroyActivities(getActivity()));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,14 +109,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         try {
             if (preference.equals(mLayoutBorderPreference)) {
                 //debug.layout
-                Process process = Runtime.getRuntime().exec("su");
-                DataOutputStream output = new DataOutputStream(process.getOutputStream());
-                output.writeBytes("setprop " + Property.DEBUG_LAYOUT_PROPERTY + " " + (value ? "true" : "false") + "\n");
-                output.writeBytes("exit\n");
-                output.flush();
-                process.waitFor();
-                output.close();
-                if (process.exitValue() == 0) {
+                if (DeveloperSettings.setDebugLayoutEnabled(value)) {
                     ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
                     mLayoutBorderPreference.setChecked(value);
                 } else {
@@ -152,14 +117,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 }
             } else if (preference.equals(mDisplayOverdrawPreference)) {
                 //overdraw
-                Process process = Runtime.getRuntime().exec("su");
-                DataOutputStream output = new DataOutputStream(process.getOutputStream());
-                output.writeBytes("setprop " + Property.getDebugOverdrawPropertyKey() + " " + (value ? Property.getDebugOverdrawPropertyEnabledValue() : "false") + "\n");
-                output.writeBytes("exit\n");
-                output.flush();
-                process.waitFor();
-                output.close();
-                if (process.exitValue() == 0) {
+                if (DeveloperSettings.setShowOverdrawEnabled(value)) {
                     ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
                     mDisplayOverdrawPreference.setChecked(value);
                 } else {
@@ -167,14 +125,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 }
             } else if (preference.equals(mProfileGPURenderingPreference)) {
                 //profile gpu rendering
-                Process process = Runtime.getRuntime().exec("su");
-                DataOutputStream output = new DataOutputStream(process.getOutputStream());
-                output.writeBytes("setprop " + Property.PROFILE_PROPERTY + " " + (value ? "visual_bars" : "false") + "\n");
-                output.writeBytes("exit\n");
-                output.flush();
-                process.waitFor();
-                output.close();
-                if (process.exitValue() == 0) {
+                if (DeveloperSettings.setProfileGPURenderingEnabled(value)) {
                     ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
                     mProfileGPURenderingPreference.setChecked(value);
                 } else {
@@ -182,17 +133,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 }
             } else if (preference.equals(mImmediatelyDestroyActivitiesPreference)) {
                 //always destroy activities
-
-                //this piece is not work, throw a InvocationTargetException on android 5.0
-                // that says "Caused by: java.lang.SecurityException: Package android does not belong to 10076"
-
-//                Class activityManagerNativeClass = Class.forName("android.app.ActivityManagerNative");
-//                Method getDefaultMethod = activityManagerNativeClass.getMethod("getDefault");
-//                Object activityManagerNativeInstance = getDefaultMethod.invoke(null);
-//                Method setAlwaysFinishMethod = activityManagerNativeClass.getMethod("setAlwaysFinish", boolean.class);
-//                setAlwaysFinishMethod.invoke(activityManagerNativeInstance, isChecked);
-
-                if (Settings.Global.putInt(getActivity().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, value ? 1 : 0)) {
+                if (DeveloperSettings.setImmediatelyDestroyActivities(getActivity(), value)) {
                     ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
                     mImmediatelyDestroyActivitiesPreference.setChecked(value);
                 } else {
@@ -200,7 +141,6 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 }
 
             }
-            pokeSystemProperties();
         } catch (IOException | InterruptedException e ) {
             e.printStackTrace();
             ((MainActivity)getActivity()).showSnackBar(R.string.set_property_failed);
@@ -208,7 +148,4 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         return false;
     }
 
-    void pokeSystemProperties() {
-        new SystemPropPoker().execute();
-    }
 }
