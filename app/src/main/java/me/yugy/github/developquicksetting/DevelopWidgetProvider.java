@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
@@ -41,6 +42,10 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            //hide the progressbar and show button
+            views.setViewVisibility(R.id.loading, View.GONE);
+            views.setViewVisibility(R.id.button_container, View.VISIBLE);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }

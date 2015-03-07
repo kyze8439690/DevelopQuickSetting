@@ -1,49 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/appwidget_dark_bg"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@drawable/appwidget_dark_bg"
     >
 
-    <Button
-        android:id="@+id/layout_border"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        style="?android:attr/borderlessButtonStyle"
-        android:text="@string/widget_layout_border"
-        android:textColor="@android:color/white"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        tools:visibility="visible"
+        >
+
+        <Button
+            android:id="@+id/layout_border"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/widget_layout_border"
+            android:textColor="@android:color/white"
+            />
+
+        <Button
+            android:id="@+id/overdraw"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/widget_overdraw"
+            android:textColor="@android:color/white"
+            />
+
+        <Button
+            android:id="@+id/gpu_rendering"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/widget_gpu"
+            android:textColor="@android:color/white"
+            />
+
+        <Button
+            android:id="@+id/destroy_activities"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/widget_destroy"
+            android:textColor="@android:color/white"
+            />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         />
 
-    <Button
-        android:id="@+id/overdraw"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        style="?android:attr/borderlessButtonStyle"
-        android:text="@string/widget_overdraw"
-        android:textColor="@android:color/white"
-        />
-
-    <Button
-        android:id="@+id/gpu_rendering"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        style="?android:attr/borderlessButtonStyle"
-        android:text="@string/widget_gpu"
-        android:textColor="@android:color/white"
-        />
-
-    <Button
-        android:id="@+id/destroy_activities"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        style="?android:attr/borderlessButtonStyle"
-        android:text="@string/widget_destroy"
-        android:textColor="@android:color/white"
-        />
-
-</LinearLayout>
+</FrameLayout>
