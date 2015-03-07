@@ -64,6 +64,7 @@ public class InstallerActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
+        //if the code below can be run, means that device do not have the 'pkill' command, try to hard reset.
         try {
             Process process = Runtime.getRuntime().exec("su");
             DataOutputStream output = new DataOutputStream(process.getOutputStream());
@@ -78,7 +79,7 @@ public class InstallerActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        //if the code below can be run, means that device do not have the 'pkill' and 'su reboot' failed, cause user have to reboot device manually.
+        //if the code below can be run, means that device run 'su reboot' failed, cause user have to reboot device manually.
         dialog.dismiss();
         AlertDialog exitDialog = new AlertDialog.Builder(this)
                 .setCancelable(true)
@@ -88,7 +89,7 @@ public class InstallerActivity extends ActionBarActivity {
                         finish();
                     }
                 })
-                .setMessage(R.string.exit_info)
+                .setMessage(R.string.install_exit_info)
                 .create();
         exitDialog.show();
     }

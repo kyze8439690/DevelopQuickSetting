@@ -21,7 +21,7 @@
     <string name="install_desc">- This application must be installed under [/system/app] in order to get writing system settings permission.\n\n- That is why we need root permission.\n\n- Now we detect that this application haven\'t be installed under [/system/app].\n\n- It may because of first time installation or application update reason.\n\n- After click the button below, this application will be move/installed into [system/app], and automatically reboot this device.</string>
     <string name="install_and_reboot">Install and reboot</string>
     <string name="require_root_permission">Require root permission…</string>
-    <string name="exit_info">It seems that the installation is finished. Now you can reboot your device and see whether it works.</string>
+    <string name="install_exit_info">It seems that the installation is finished. Now you can reboot your device and see whether it works.</string>
     <string name="preference_category_key">preference_category</string>
     <string name="about">About</string>
     <string name="uninstall">Uninstall</string>
@@ -33,4 +33,8 @@
     <string name="widget_overdraw">OVERDRAW</string>
     <string name="widget_gpu">GPU</string>
     <string name="widget_destroy">DESTROY</string>
+    <string name="uninstall_info">If you click uninstall below, the app will be remove from [system/app] directory. You have to reinstall this application to reopen it.</string>
+    <string name="warning">Warning</string>
+    <string name="uninstall_and_reboot">Uninstall and reboot</string>
+    <string name="uninstall_exit_info">It seems that the uninstallation is finished. Now you can reboot your device and see whether it works.</string>
 </resources>
