@@ -2,8 +2,14 @@ package me.yugy.github.developquicksetting;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.database.ContentObserver;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -11,9 +17,20 @@ import java.io.IOException;
 
 public class DevelopWidgetProvider extends AppWidgetProvider {
 
+
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+        Utils.log("onAppWidgetOptionsChanged");
+        refreshWidgets(context, appWidgetManager, appWidgetId);
+    }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Utils.log("onUpdate");
+        refreshWidgets(context, appWidgetManager, appWidgetIds);
+    }
+
+    private void refreshWidgets(Context context, AppWidgetManager appWidgetManager, int... appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
             try {
@@ -75,4 +92,6 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
+
+
 }
