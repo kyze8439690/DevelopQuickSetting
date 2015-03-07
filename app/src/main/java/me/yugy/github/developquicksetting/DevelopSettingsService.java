@@ -10,7 +10,7 @@ import android.support.annotation.IntDef;
 
 import java.io.IOException;
 
-public class WidgetService extends IntentService {
+public class DevelopSettingsService extends IntentService {
 
     @IntDef({ACTION_SET_SHOW_LAYOUT_BORDER, ACTION_SET_DISPLAY_OVERDRAW,
             ACTION_SET_PROFILE_GPU_RENDERING, ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES})
@@ -26,7 +26,7 @@ public class WidgetService extends IntentService {
     }
 
     public static Intent getIntent(Context context, @Action int action) {
-        Intent intent = new Intent(context, WidgetService.class);
+        Intent intent = new Intent(context, DevelopSettingsService.class);
         intent.putExtra("action", action);
         return intent;
     }
@@ -36,7 +36,7 @@ public class WidgetService extends IntentService {
         return PendingIntent.getService(context, action, intent, 0);
     }
 
-    public WidgetService() {
+    public DevelopSettingsService() {
         super("WidgetService");
     }
 

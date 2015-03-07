@@ -37,7 +37,7 @@
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/appwidget_info" />
         </receiver>
-        <service android:name=".WidgetService" />
+        <service android:name=".DevelopSettingsService" />
         <meta-data android:name="com.crashlytics.ApiKey" android:value="5aadd9d4ef0bfd1fd797e15f0cbcf3cc74aa044a"/>
     </application>
 

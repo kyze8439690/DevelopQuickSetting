@@ -1,6 +1,5 @@
 package me.yugy.github.developquicksetting;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -35,14 +34,14 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
                         DeveloperSettings.isImmediatelyDestroyActivities(context) ? enabledColor : disabledColor);
 
                 //set widget click listener
-                views.setOnClickPendingIntent(R.id.layout_border, WidgetService.getPendingIntent(
-                        context, WidgetService.ACTION_SET_SHOW_LAYOUT_BORDER));
-                views.setOnClickPendingIntent(R.id.overdraw, WidgetService.getPendingIntent(
-                        context, WidgetService.ACTION_SET_DISPLAY_OVERDRAW));
-                views.setOnClickPendingIntent(R.id.gpu_rendering, WidgetService.getPendingIntent(
-                        context, WidgetService.ACTION_SET_PROFILE_GPU_RENDERING));
-                views.setOnClickPendingIntent(R.id.destroy_activities, WidgetService.getPendingIntent(
-                        context, WidgetService.ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES));
+                views.setOnClickPendingIntent(R.id.layout_border, DevelopSettingsService.getPendingIntent(
+                        context, DevelopSettingsService.ACTION_SET_SHOW_LAYOUT_BORDER));
+                views.setOnClickPendingIntent(R.id.overdraw, DevelopSettingsService.getPendingIntent(
+                        context, DevelopSettingsService.ACTION_SET_DISPLAY_OVERDRAW));
+                views.setOnClickPendingIntent(R.id.gpu_rendering, DevelopSettingsService.getPendingIntent(
+                        context, DevelopSettingsService.ACTION_SET_PROFILE_GPU_RENDERING));
+                views.setOnClickPendingIntent(R.id.destroy_activities, DevelopSettingsService.getPendingIntent(
+                        context, DevelopSettingsService.ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES));
             } catch (IOException e) {
                 e.printStackTrace();
             }
