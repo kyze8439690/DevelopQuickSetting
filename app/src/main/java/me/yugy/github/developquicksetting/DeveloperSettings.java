@@ -13,6 +13,9 @@ public class DeveloperSettings {
     private static final boolean LOG_ENABLED = false;
 
     public static boolean isAdbEnabled(Context context) {
+        if (context == null) {
+            return false;
+        }
         long startTime = System.currentTimeMillis();
         int isAdbChecked = Settings.Global.getInt(context.getContentResolver(), Settings.Global.ADB_ENABLED, 0);
         if (LOG_ENABLED) {
@@ -70,6 +73,9 @@ public class DeveloperSettings {
     }
 
     public static boolean isImmediatelyDestroyActivities(Context context) {
+        if (context == null) {
+            return false;
+        }
         long startTime = System.currentTimeMillis();
         int isAlwaysDestroyActivitiesChecked = Settings.Global.getInt(
                 context.getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);

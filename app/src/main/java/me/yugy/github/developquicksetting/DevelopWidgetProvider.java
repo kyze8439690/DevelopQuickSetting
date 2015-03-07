@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -41,6 +42,11 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
                         context, DevelopSettingsService.ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES));
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+
+            //hide the button that device api level not supported.
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                views.setViewVisibility(R.id.gpu_rendering, View.GONE);
             }
 
             //hide the progressbar and show button
