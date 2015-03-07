@@ -1,6 +1,7 @@
 package me.yugy.github.developquicksetting;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,6 +29,11 @@ public class WidgetService extends IntentService {
         Intent intent = new Intent(context, WidgetService.class);
         intent.putExtra("action", action);
         return intent;
+    }
+
+    public static PendingIntent getPendingIntent(Context context, @Action int action) {
+        Intent intent = getIntent(context, action);
+        return PendingIntent.getService(context, action, intent, 0);
     }
 
     public WidgetService() {
