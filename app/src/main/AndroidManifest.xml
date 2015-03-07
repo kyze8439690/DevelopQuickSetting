@@ -30,7 +30,8 @@
                   android:screenOrientation="portrait"
                   />
         
-        <receiver android:name=".DevelopWidgetProvider">
+        <receiver android:name=".DevelopWidgetProvider"
+                  android:previewImage="@drawable/preview">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
