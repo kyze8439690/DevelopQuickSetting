@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -92,34 +93,45 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         if (getActivity() != null) {
             getActivity().invalidateOptionsMenu();
         }
-        try {
-            //check adb enabled
+        new RefreshPreferencesStateTask().execute();
+    }
+
+    private class RefreshPreferencesStateTask extends AsyncTask<Void, Void, boolean[]> {
+
+        @Override
+        protected boolean[] doInBackground(Void... params) {
             if (getActivity() != null) {
-                setOtherPreferencesEnabled(DeveloperSettings.isAdbEnabled(getActivity()));
+                try {
+                    long startTime = System.currentTimeMillis();
+                    boolean[] result = new boolean[5];
+                    result[0] = DeveloperSettings.isAdbEnabled(getActivity());
+                    result[1] = DeveloperSettings.isDebugLayoutEnabled();
+                    result[2] = DeveloperSettings.isShowOverdrawEnabled();
+                    result[3] = DeveloperSettings.isShowProfileGPURendering();
+                    result[4] = DeveloperSettings.isImmediatelyDestroyActivities(getActivity());
+                    Utils.log("RefreshPreferencesStateTask spends " + (System.currentTimeMillis() - startTime) + "ms in background.");
+                    return result;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
+            return null;
+        }
 
-            //debug layout
-            if (mLayoutBorderPreference != null) {
-                mLayoutBorderPreference.setChecked(DeveloperSettings.isDebugLayoutEnabled());
-            }
-
-            //overdraw
-            if (mDisplayOverdrawPreference != null) {
-                mDisplayOverdrawPreference.setChecked(DeveloperSettings.isShowOverdrawEnabled());
-            }
-
-            //profile gpu rendering
-            if (mProfileGPURenderingPreference != null) {
-                mProfileGPURenderingPreference.setChecked(DeveloperSettings.isShowProfileGPURendering());
-            }
-
-            //always destroy activities
+        @Override
+        protected void onPostExecute(boolean[] result) {
             if (getActivity() != null) {
-                mImmediatelyDestroyActivitiesPreference.setChecked(DeveloperSettings.isImmediatelyDestroyActivities(getActivity()));
+                if (result != null) {
+                    setOtherPreferencesEnabled(result[0]);
+                    mLayoutBorderPreference.setChecked(result[1]);
+                    mDisplayOverdrawPreference.setChecked(result[2]);
+                    mProfileGPURenderingPreference.setChecked(result[3]);
+                    mImmediatelyDestroyActivitiesPreference.setChecked(result[4]);
+                } else {
+                    ((MainActivity)getActivity()).showSnackBar(R.string.update_checkbox_state_failed);
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            ((MainActivity)getActivity()).showSnackBar(R.string.update_checkbox_state_failed);
         }
     }
 

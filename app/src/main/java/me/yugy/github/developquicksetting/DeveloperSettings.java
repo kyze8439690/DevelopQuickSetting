@@ -10,12 +10,19 @@ import java.io.InputStreamReader;
 
 public class DeveloperSettings {
 
+    private static final boolean LOG_ENABLED = false;
+
     public static boolean isAdbEnabled(Context context) {
+        long startTime = System.currentTimeMillis();
         int isAdbChecked = Settings.Global.getInt(context.getContentResolver(), Settings.Global.ADB_ENABLED, 0);
+        if (LOG_ENABLED) {
+            Utils.log("isAdbEnabled spends " + (System.currentTimeMillis() - startTime) + "ms.");
+        }
         return isAdbChecked == 1;
     }
 
     public static boolean isDebugLayoutEnabled() throws IOException {
+        long startTime = System.currentTimeMillis();
         Process process = Runtime.getRuntime().exec("getprop " + Property.DEBUG_LAYOUT_PROPERTY);
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         StringBuilder builder = new StringBuilder();
@@ -24,10 +31,14 @@ public class DeveloperSettings {
             builder.append(line);
         }
         String result = builder.toString();
+        if (LOG_ENABLED) {
+            Utils.log("isDebugLayoutEnabled spends " + (System.currentTimeMillis() - startTime) + "ms.");
+        }
         return "true".equals(result);
     }
 
     public static boolean isShowOverdrawEnabled() throws IOException {
+        long startTime = System.currentTimeMillis();
         Process process = Runtime.getRuntime().exec("getprop " + Property.getDebugOverdrawPropertyKey());
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         StringBuilder builder = new StringBuilder();
@@ -36,10 +47,14 @@ public class DeveloperSettings {
             builder.append(line);
         }
         String result = builder.toString();
+        if (LOG_ENABLED) {
+            Utils.log("isShowOverdrawEnabled spends " + (System.currentTimeMillis() - startTime) + "ms.");
+        }
         return Property.getDebugOverdrawPropertyEnabledValue().equals(result);
     }
 
     public static boolean isShowProfileGPURendering() throws IOException {
+        long startTime = System.currentTimeMillis();
         Process process = Runtime.getRuntime().exec("getprop " + Property.PROFILE_PROPERTY);
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         StringBuilder builder = new StringBuilder();
@@ -48,12 +63,19 @@ public class DeveloperSettings {
             builder.append(line);
         }
         String result = builder.toString();
+        if (LOG_ENABLED) {
+            Utils.log("isShowProfileGPURendering spends " + (System.currentTimeMillis() - startTime) + "ms.");
+        }
         return "visual_bars".equals(result);
     }
 
     public static boolean isImmediatelyDestroyActivities(Context context) {
+        long startTime = System.currentTimeMillis();
         int isAlwaysDestroyActivitiesChecked = Settings.Global.getInt(
                 context.getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
+        if (LOG_ENABLED) {
+            Utils.log("isImmediatelyDestroyActivities spends " + (System.currentTimeMillis() - startTime) + "ms.");
+        }
         return isAlwaysDestroyActivitiesChecked == 1;
     }
 
