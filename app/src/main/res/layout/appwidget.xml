@@ -15,44 +15,40 @@
         tools:visibility="visible"
         >
 
-        <Button
+        <ImageButton
             android:id="@+id/layout_border"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
-            android:text="@string/widget_layout_border"
-            android:textColor="@android:color/white"
+            android:src="@drawable/ic_debug_layout_disabled"
             />
 
-        <Button
+        <ImageButton
             android:id="@+id/overdraw"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
-            android:text="@string/widget_overdraw"
-            android:textColor="@android:color/white"
+            android:src="@drawable/ic_overdraw_disabled"
             />
 
-        <Button
+        <ImageButton
             android:id="@+id/gpu_rendering"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
-            android:text="@string/widget_gpu"
-            android:textColor="@android:color/white"
+            android:src="@drawable/ic_gpu_rendering_disabled"
             />
 
-        <Button
+        <ImageButton
             android:id="@+id/destroy_activities"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
-            android:text="@string/widget_destroy"
-            android:textColor="@android:color/white"
+            android:src="@drawable/ic_destroy_disabled"
             />
 
     </LinearLayout>

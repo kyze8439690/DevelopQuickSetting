@@ -16,20 +16,22 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Utils.log("onUpdate");
-        int enabledColor = context.getResources().getColor(android.R.color.white);
-        int disabledColor = context.getResources().getColor(android.R.color.tab_indicator_text);
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
             try {
                 //update widget state
-                views.setTextColor(R.id.layout_border,
-                        DeveloperSettings.isDebugLayoutEnabled() ? enabledColor : disabledColor);
-                views.setTextColor(R.id.overdraw,
-                        DeveloperSettings.isShowOverdrawEnabled() ? enabledColor : disabledColor);
-                views.setTextColor(R.id.gpu_rendering,
-                        DeveloperSettings.isShowProfileGPURendering() ? enabledColor : disabledColor);
-                views.setTextColor(R.id.destroy_activities,
-                        DeveloperSettings.isImmediatelyDestroyActivities(context) ? enabledColor : disabledColor);
+                views.setImageViewResource(R.id.layout_border,
+                        DeveloperSettings.isDebugLayoutEnabled() ?
+                                R.drawable.ic_debug_layout_enabled : R.drawable.ic_debug_layout_disabled);
+                views.setImageViewResource(R.id.overdraw,
+                        DeveloperSettings.isShowOverdrawEnabled() ?
+                                R.drawable.ic_overdraw_enabled : R.drawable.ic_overdraw_disabled);
+                views.setImageViewResource(R.id.gpu_rendering,
+                        DeveloperSettings.isShowProfileGPURendering() ?
+                                R.drawable.ic_gpu_rendering_enabled : R.drawable.ic_gpu_rendering_disabled);
+                views.setImageViewResource(R.id.destroy_activities,
+                        DeveloperSettings.isImmediatelyDestroyActivities(context) ?
+                                R.drawable.ic_destroy_enabled : R.drawable.ic_destroy_disabled);
 
                 //set widget click listener
                 views.setOnClickPendingIntent(R.id.layout_border, DevelopSettingsService.getPendingIntent(
