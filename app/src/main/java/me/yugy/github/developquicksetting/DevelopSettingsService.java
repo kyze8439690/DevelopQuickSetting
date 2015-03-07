@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.IntDef;
+import android.support.v4.content.LocalBroadcastManager;
 
 import java.io.IOException;
 
@@ -47,33 +48,26 @@ public class DevelopSettingsService extends IntentService {
             Utils.log("onHandleIntent(), action: " + action);
             switch (action) {
                 case ACTION_SET_SHOW_LAYOUT_BORDER:
-                    if (DeveloperSettings.toggleDebugLayout()) {
-                        refreshWidgetState();
-                    }
+                    refreshUIState(DeveloperSettings.toggleDebugLayout());
                     break;
                 case ACTION_SET_DISPLAY_OVERDRAW:
-                    if (DeveloperSettings.toggleShowOverdraw()) {
-                        refreshWidgetState();
-                    }
+                    refreshUIState(DeveloperSettings.toggleShowOverdraw());
                     break;
                 case ACTION_SET_PROFILE_GPU_RENDERING:
-                    if (DeveloperSettings.toggleProfileGPURendering()) {
-                        refreshWidgetState();
-                    }
+                    refreshUIState(DeveloperSettings.toggleProfileGPURendering());
                     break;
                 case ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES:
-                    if (DeveloperSettings.toggleImmediatelyDestroyActivity(this)) {
-                        refreshWidgetState();
-                    }
+                    refreshUIState(DeveloperSettings.toggleImmediatelyDestroyActivity(this));
                     break;
             }
         } catch (IOException | InterruptedException | NullPointerException e) {
             e.printStackTrace();
+            refreshUIState(false);
         }
     }
 
-    private void refreshWidgetState() {
-        Utils.log("refreshWidgetState");
+    private void refreshUIState(boolean success) {
+        Utils.log("refreshUIState");
         //refresh widget state if exists.
         Intent intent = new Intent(this, DevelopWidgetProvider.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
@@ -81,5 +75,10 @@ public class DevelopSettingsService extends IntentService {
                 new ComponentName(this, DevelopWidgetProvider.class));
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
         sendBroadcast(intent);
+
+        //refresh activity state if exists.
+        intent = new Intent(Conf.ACTION_REFRESH_UI);
+        intent.putExtra("result", success);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

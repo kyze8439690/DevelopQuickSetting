@@ -1,11 +1,16 @@
 package me.yugy.github.developquicksetting;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.support.v4.content.LocalBroadcastManager;
 
 import java.io.IOException;
 
@@ -15,6 +20,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
     private CheckBoxPreference mDisplayOverdrawPreference;
     private CheckBoxPreference mProfileGPURenderingPreference;
     private CheckBoxPreference mImmediatelyDestroyActivitiesPreference;
+    private BroadcastReceiver mRefreshUIReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,6 +28,21 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         addPreferencesFromResource(R.xml.main);
         findPreferences();
         setPreferencesVisibility();
+
+        mRefreshUIReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                removePreferencesListener();
+                updatePreferencesState();
+                setPreferencesListener();
+                if (intent.getBooleanExtra("result", false)) {
+                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
+                } else {
+                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_failed);
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRefreshUIReceiver, new IntentFilter(Conf.ACTION_REFRESH_UI));
     }
 
     @Override
@@ -32,6 +53,12 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         removePreferencesListener();
         updatePreferencesState();
         setPreferencesListener();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRefreshUIReceiver);
     }
 
     private void findPreferences() {
@@ -105,45 +132,18 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        boolean value = (boolean) newValue;
-        try {
-            if (preference.equals(mLayoutBorderPreference)) {
-                //debug.layout
-                if (DeveloperSettings.setDebugLayoutEnabled(value)) {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
-                    mLayoutBorderPreference.setChecked(value);
-                } else {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_failed);
-                }
-            } else if (preference.equals(mDisplayOverdrawPreference)) {
-                //overdraw
-                if (DeveloperSettings.setShowOverdrawEnabled(value)) {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
-                    mDisplayOverdrawPreference.setChecked(value);
-                } else {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_failed);
-                }
-            } else if (preference.equals(mProfileGPURenderingPreference)) {
-                //profile gpu rendering
-                if (DeveloperSettings.setProfileGPURenderingEnabled(value)) {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
-                    mProfileGPURenderingPreference.setChecked(value);
-                } else {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_failed);
-                }
-            } else if (preference.equals(mImmediatelyDestroyActivitiesPreference)) {
-                //always destroy activities
-                if (DeveloperSettings.setImmediatelyDestroyActivities(getActivity(), value)) {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
-                    mImmediatelyDestroyActivitiesPreference.setChecked(value);
-                } else {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_failed);
-                }
-
-            }
-        } catch (IOException | InterruptedException e ) {
-            e.printStackTrace();
-            ((MainActivity)getActivity()).showSnackBar(R.string.set_property_failed);
+        if (preference.equals(mLayoutBorderPreference)) {
+            //debug.layout
+            DevelopSettingsService.newTask(getActivity(), DevelopSettingsService.ACTION_SET_SHOW_LAYOUT_BORDER);
+        } else if (preference.equals(mDisplayOverdrawPreference)) {
+            //overdraw
+            DevelopSettingsService.newTask(getActivity(), DevelopSettingsService.ACTION_SET_DISPLAY_OVERDRAW);
+        } else if (preference.equals(mProfileGPURenderingPreference)) {
+            //profile gpu rendering
+            DevelopSettingsService.newTask(getActivity(), DevelopSettingsService.ACTION_SET_PROFILE_GPU_RENDERING);
+        } else if (preference.equals(mImmediatelyDestroyActivitiesPreference)) {
+            //always destroy activities
+            DevelopSettingsService.newTask(getActivity(), DevelopSettingsService.ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES);
         }
         return false;
     }

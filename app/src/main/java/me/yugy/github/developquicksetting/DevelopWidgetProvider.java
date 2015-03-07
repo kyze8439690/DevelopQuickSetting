@@ -12,12 +12,8 @@ import java.io.IOException;
 public class DevelopWidgetProvider extends AppWidgetProvider {
 
     @Override
-    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-        super.onReceive(context, intent);
-    }
-
-    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Utils.log("onUpdate");
         int enabledColor = context.getResources().getColor(android.R.color.white);
         int disabledColor = context.getResources().getColor(android.R.color.tab_indicator_text);
         for (int appWidgetId : appWidgetIds) {
