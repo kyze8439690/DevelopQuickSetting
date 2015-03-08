@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">DevelopQuickSetting</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="enable_adb">Enable ADB</string>
-    <string name="update_checkbox_state_failed">Update developer setting state failed.</string>
+    <string name="update_checkbox_state_failed">Update developer setting state failed. Please check your root permission.</string>
     <string name="show_layout_border">Show Layout Border</string>
     <string name="set_property_failed">Set property failed.</string>
     <string name="set_property_success_prompt">Set property success, press kill debug application and restart it to see the result.</string>
@@ -17,6 +15,8 @@
     <string name="key_display_overdraw">display_overdraw</string>
     <string name="key_profile_gpu_rendering">profile_gpu_rendering</string>
     <string name="key_always_destroy_activities">always_destroy_activities</string>
+    <string name="key_adb_through_wifi">adb_through_wifi</string>
+
     <string name="installer_title">App Installer</string>
     <string name="install_desc">- This application must be installed under [/system/app] in order to get writing system settings permission.\n\n- That is why we need root permission.\n\n- Now we detect that this application haven\'t be installed under [/system/app].\n\n- It may because of first time installation or application update reason.\n\n- After click the button below, this application will be move/installed into [system/app], and automatically reboot this device.</string>
     <string name="install_and_reboot">Install and reboot</string>
@@ -37,4 +37,6 @@
     <string name="warning">Warning</string>
     <string name="uninstall_and_reboot">Uninstall and reboot</string>
     <string name="uninstall_exit_info">It seems that the uninstallation is finished. Now you can reboot your device and see whether it works.</string>
+    <string name="adb_through_wifi">Adb through WIFI</string>
+    <string name="get_adb_through_wifi_state_failed">Get Adb through wifi state failed.</string>
 </resources>

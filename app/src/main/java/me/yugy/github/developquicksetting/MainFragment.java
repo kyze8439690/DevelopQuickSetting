@@ -21,6 +21,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
     private CheckBoxPreference mDisplayOverdrawPreference;
     private CheckBoxPreference mProfileGPURenderingPreference;
     private CheckBoxPreference mImmediatelyDestroyActivitiesPreference;
+    private CheckBoxPreference mAdbThroughWifiPreference;
     private BroadcastReceiver mRefreshUIReceiver;
 
     @Override
@@ -33,6 +34,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         mRefreshUIReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Utils.log("RefreshUIReceiver onReceive");
                 removePreferencesListener();
                 updatePreferencesState();
                 setPreferencesListener();
@@ -67,6 +69,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         mDisplayOverdrawPreference = (CheckBoxPreference) findPreference(getString(R.string.key_display_overdraw));
         mProfileGPURenderingPreference = (CheckBoxPreference) findPreference(getString(R.string.key_profile_gpu_rendering));
         mImmediatelyDestroyActivitiesPreference = (CheckBoxPreference) findPreference(getString(R.string.key_always_destroy_activities));
+        mAdbThroughWifiPreference = (CheckBoxPreference) findPreference(getString(R.string.key_adb_through_wifi));
     }
 
     private void setPreferencesVisibility() {
@@ -80,6 +83,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         mDisplayOverdrawPreference.setOnPreferenceChangeListener(null);
         mProfileGPURenderingPreference.setOnPreferenceChangeListener(null);
         mImmediatelyDestroyActivitiesPreference.setOnPreferenceChangeListener(null);
+        mAdbThroughWifiPreference.setOnPreferenceChangeListener(null);
     }
 
     private void setPreferencesListener() {
@@ -87,6 +91,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         mDisplayOverdrawPreference.setOnPreferenceChangeListener(this);
         mProfileGPURenderingPreference.setOnPreferenceChangeListener(this);
         mImmediatelyDestroyActivitiesPreference.setOnPreferenceChangeListener(this);
+        mAdbThroughWifiPreference.setOnPreferenceChangeListener(this);
     }
 
     public void updatePreferencesState() {
@@ -103,12 +108,13 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
             if (getActivity() != null) {
                 try {
                     long startTime = System.currentTimeMillis();
-                    boolean[] result = new boolean[5];
+                    boolean[] result = new boolean[6];
                     result[0] = DeveloperSettings.isAdbEnabled(getActivity());
                     result[1] = DeveloperSettings.isDebugLayoutEnabled();
                     result[2] = DeveloperSettings.isShowOverdrawEnabled();
                     result[3] = DeveloperSettings.isShowProfileGPURendering();
                     result[4] = DeveloperSettings.isImmediatelyDestroyActivities(getActivity());
+                    result[5] = DeveloperSettings.isAdbThroughWifiEnabled();
                     Utils.log("RefreshPreferencesStateTask spends " + (System.currentTimeMillis() - startTime) + "ms in background.");
                     return result;
                 } catch (IOException e) {
@@ -128,9 +134,42 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                     mDisplayOverdrawPreference.setChecked(result[2]);
                     mProfileGPURenderingPreference.setChecked(result[3]);
                     mImmediatelyDestroyActivitiesPreference.setChecked(result[4]);
+                    mAdbThroughWifiPreference.setChecked(result[5]);
+                    if (mAdbThroughWifiPreference.isChecked()) {
+                        new RefreshAdbThroughWifiStateTask().execute();
+                    } else {
+                        mAdbThroughWifiPreference.setSummary("");
+                    }
                 } else {
                     ((MainActivity)getActivity()).showSnackBar(R.string.update_checkbox_state_failed);
                 }
+            }
+        }
+    }
+
+    private class RefreshAdbThroughWifiStateTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                String port = DeveloperSettings.getAdbThroughWifiPort();
+                String wifiIp = DeveloperSettings.getWifiIp();
+                if (port.equals("-1") || port.length() == 0 || wifiIp == null) {
+                    return null;
+                }
+                return wifiIp + ":" + port;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s == null) {
+                mAdbThroughWifiPreference.setSummary(R.string.get_adb_through_wifi_state_failed);
+            } else {
+                mAdbThroughWifiPreference.setSummary(s);
             }
         }
     }
@@ -140,6 +179,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         mDisplayOverdrawPreference.setEnabled(enabled);
         mProfileGPURenderingPreference.setEnabled(enabled);
         mImmediatelyDestroyActivitiesPreference.setEnabled(enabled);
+        mAdbThroughWifiPreference.setEnabled(enabled);
     }
 
     @Override
@@ -156,6 +196,9 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         } else if (preference.equals(mImmediatelyDestroyActivitiesPreference)) {
             //always destroy activities
             DevelopSettingsService.newTask(getActivity(), DevelopSettingsService.ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES);
+        } else if (preference.equals(mAdbThroughWifiPreference)) {
+            //adb through wifi
+            DevelopSettingsService.newTask(getActivity(), DevelopSettingsService.ACTION_SET_ADB_THROUGH_WIFI);
         }
         return false;
     }

@@ -6,6 +6,10 @@ import android.support.annotation.StringRes;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Utils {
 
     public static void toast(Context context, @StringRes int resId) {

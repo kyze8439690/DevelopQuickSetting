@@ -26,6 +26,11 @@
             android:title="@string/immediately_destroy_activities"
             />
 
+        <CheckBoxPreference
+            android:key="@string/key_adb_through_wifi"
+            android:title="@string/adb_through_wifi"
+            />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

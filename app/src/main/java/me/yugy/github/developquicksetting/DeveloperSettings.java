@@ -7,7 +7,13 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/**
+ * DeveloperSetting class, method may block ui thread
+ * (every method spend about 20-30ms to execute, so remember to call it asynchronously.
+ */
 public class DeveloperSettings {
 
     private static final boolean LOG_ENABLED = false;
@@ -85,6 +91,26 @@ public class DeveloperSettings {
         return isAlwaysDestroyActivitiesChecked == 1;
     }
 
+    public static String getAdbThroughWifiPort() throws IOException {
+        Process process = Runtime.getRuntime().exec("getprop " + Property.ADB_WIFI_PORT);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        return builder.toString();
+    }
+
+    public static boolean isAdbThroughWifiEnabled() throws IOException {
+        long startTime = System.currentTimeMillis();
+        String result = getAdbThroughWifiPort();
+        if (LOG_ENABLED) {
+            Utils.log("isAdbThroughWifiEnabled spends " + (System.currentTimeMillis() - startTime) + "ms.");
+        }
+        return result.matches("[0-9]+");
+    }
+
     public static boolean setDebugLayoutEnabled(boolean enabled) throws IOException, InterruptedException {
         Process process = Runtime.getRuntime().exec("su");
         DataOutputStream output = new DataOutputStream(process.getOutputStream());
@@ -143,6 +169,19 @@ public class DeveloperSettings {
         return result;
     }
 
+    public static boolean setAdbThroughWIFIEnabled(boolean enabled) throws IOException, InterruptedException {
+        Process process = Runtime.getRuntime().exec("su");
+        DataOutputStream output = new DataOutputStream(process.getOutputStream());
+        output.writeBytes("setprop " + Property.ADB_WIFI_PORT + " " + (enabled ? Conf.ADB_WIFI_PORT : -1) + "\n");
+        output.writeBytes("stop adbd\n");
+        output.writeBytes("start adbd\n");
+        output.writeBytes("exit\n");
+        output.flush();
+        process.waitFor();
+        output.close();
+        return process.exitValue() == 0;
+    }
+
     public static boolean toggleDebugLayout() throws IOException, InterruptedException {
         return setDebugLayoutEnabled(!isDebugLayoutEnabled());
     }
@@ -159,8 +198,30 @@ public class DeveloperSettings {
         return setImmediatelyDestroyActivities(context, !isImmediatelyDestroyActivities(context));
     }
 
+    public static boolean toggleAdbThroughWifi() throws IOException, InterruptedException {
+        return setAdbThroughWIFIEnabled(!isAdbThroughWifiEnabled());
+    }
+
     private static void pokeSystemProperties() {
         new SystemPropPoker().execute();
+    }
+
+    public static String getWifiIp() throws IOException {
+        Process process = Runtime.getRuntime().exec("ip -f inet addr show wlan0");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        String result = builder.toString();
+        Pattern pattern = Pattern.compile("inet ([.0-9]+)");
+        Matcher matcher = pattern.matcher(result);
+        if (matcher.find(1)) {
+            return matcher.group(1);
+        } else {
+            return null;                    //maybe because wifi is not opened.
+        }
     }
 
 }

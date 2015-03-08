@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //check install path
-        if (Utils.isAppInstallInData(this)) {
+        if (Utils.isAppInstallInData(this) && false) {
             InstallerActivity.launch(this);
             finish();
         }

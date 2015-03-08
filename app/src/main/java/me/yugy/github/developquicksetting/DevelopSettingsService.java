@@ -14,13 +14,15 @@ import java.io.IOException;
 public class DevelopSettingsService extends IntentService {
 
     @IntDef({ACTION_SET_SHOW_LAYOUT_BORDER, ACTION_SET_DISPLAY_OVERDRAW,
-            ACTION_SET_PROFILE_GPU_RENDERING, ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES})
+            ACTION_SET_PROFILE_GPU_RENDERING, ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES,
+            ACTION_SET_ADB_THROUGH_WIFI})
     public @interface Action {}
 
     public static final int ACTION_SET_SHOW_LAYOUT_BORDER = 1;
     public static final int ACTION_SET_DISPLAY_OVERDRAW = 2;
     public static final int ACTION_SET_PROFILE_GPU_RENDERING = 3;
     public static final int ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES = 4;
+    public static final int ACTION_SET_ADB_THROUGH_WIFI = 5;
 
     public static void newTask(Context context, @Action int action) {
         context.startService(getIntent(context, action));
@@ -58,6 +60,9 @@ public class DevelopSettingsService extends IntentService {
                     break;
                 case ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES:
                     refreshUIState(DeveloperSettings.toggleImmediatelyDestroyActivity(this));
+                    break;
+                case ACTION_SET_ADB_THROUGH_WIFI:
+                    refreshUIState(DeveloperSettings.toggleAdbThroughWifi());
                     break;
             }
         } catch (IOException | InterruptedException | NullPointerException e) {
