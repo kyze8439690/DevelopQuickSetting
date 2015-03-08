@@ -90,6 +90,12 @@ public class InstallerActivity extends ActionBarActivity {
                     }
                 })
                 .setMessage(R.string.install_exit_info)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
                 .create();
         exitDialog.show();
     }
