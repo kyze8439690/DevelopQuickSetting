@@ -39,7 +39,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 updatePreferencesState();
                 setPreferencesListener();
                 if (intent.getBooleanExtra("result", false)) {
-                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success_prompt);
+                    ((MainActivity)getActivity()).showSnackBar(R.string.set_property_success);
                 } else {
                     ((MainActivity)getActivity()).showSnackBar(R.string.set_property_failed);
                 }

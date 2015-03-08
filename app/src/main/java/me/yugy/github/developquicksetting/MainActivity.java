@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //check install path
-        if (Utils.isAppInstallInData(this) && false) {
+        if (Utils.isAppInstallInData(this)) {
             InstallerActivity.launch(this);
             finish();
         }
@@ -90,21 +90,25 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.adb);
-        SwitchCompat adbSwitch = (SwitchCompat) item.getActionView().findViewById(R.id.adb_switch);
-        int isAdbChecked = Settings.Global.getInt(getContentResolver(), Settings.Global.ADB_ENABLED, 0);
-        adbSwitch.setChecked(isAdbChecked == 1);
-        if (mFragment != null) {
-            mFragment.updatePreferencesState();
-        }
-        adbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Settings.Global.putInt(getContentResolver(), Settings.Global.ADB_ENABLED, isChecked ? 1 : 0);
-                if (mFragment != null) {
-                    mFragment.updatePreferencesState();
-                }
+        if (item != null) {
+            menu.removeItem(R.id.adb);      //remove
+
+            SwitchCompat adbSwitch = (SwitchCompat) item.getActionView().findViewById(R.id.adb_switch);
+            int isAdbChecked = Settings.Global.getInt(getContentResolver(), Settings.Global.ADB_ENABLED, 0);
+            adbSwitch.setChecked(isAdbChecked == 1);
+            if (mFragment != null) {
+                mFragment.updatePreferencesState();
             }
-        });
+            adbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Settings.Global.putInt(getContentResolver(), Settings.Global.ADB_ENABLED, isChecked ? 1 : 0);
+                    if (mFragment != null) {
+                        mFragment.updatePreferencesState();
+                    }
+                }
+            });
+        }
         return true;
     }
 
