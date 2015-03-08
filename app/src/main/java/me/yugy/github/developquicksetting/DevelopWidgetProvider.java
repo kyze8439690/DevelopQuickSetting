@@ -67,6 +67,14 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
                     views.setImageViewResource(R.id.destroy_activities_indicator, R.color.appwidget_indicator_disabled);
                 }
 
+                if (DeveloperSettings.isAdbThroughWifiEnabled()) {
+                    views.setImageViewResource(R.id.adb_wifi_image, R.drawable.ic_adb_wifi_enabled);
+                    views.setImageViewResource(R.id.adb_wifi_indicator, R.color.appwidget_indicator_enabled);
+                } else {
+                    views.setImageViewResource(R.id.adb_wifi_image, R.drawable.ic_adb_wifi_disabled);
+                    views.setImageViewResource(R.id.adb_wifi_indicator, R.color.appwidget_indicator_disabled);
+                }
+
                 //set widget click listener
                 views.setOnClickPendingIntent(R.id.layout_border, DevelopSettingsService.getPendingIntent(
                         context, DevelopSettingsService.ACTION_SET_SHOW_LAYOUT_BORDER));
@@ -76,6 +84,8 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
                         context, DevelopSettingsService.ACTION_SET_PROFILE_GPU_RENDERING));
                 views.setOnClickPendingIntent(R.id.destroy_activities, DevelopSettingsService.getPendingIntent(
                         context, DevelopSettingsService.ACTION_SET_IMMEDIATELY_DESTROY_ACTIVITIES));
+                views.setOnClickPendingIntent(R.id.adb_wifi, DevelopSettingsService.getPendingIntent(
+                        context, DevelopSettingsService.ACTION_SET_ADB_THROUGH_WIFI));
             } catch (IOException e) {
                 e.printStackTrace();
             }
