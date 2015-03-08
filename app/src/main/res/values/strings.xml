@@ -27,16 +27,11 @@
     <string name="uninstall">Uninstall</string>
     <string name="open_developer_settings">Open developer settings</string>
     <string name="can_not_open_developer_setting">Can not open developer settings</string>
-
-    <!--widget string-->
-    <string name="widget_layout_border">LAYOUT</string>
-    <string name="widget_overdraw">OVERDRAW</string>
-    <string name="widget_gpu">GPU</string>
-    <string name="widget_destroy">DESTROY</string>
+    <string name="get_adb_through_wifi_state_failed">Get Adb through wifi state failed.</string>
     <string name="uninstall_info">If you click uninstall below, the app will be remove from [system/app] directory. You have to reinstall this application to reopen it.</string>
     <string name="warning">Warning</string>
     <string name="uninstall_and_reboot">Uninstall and reboot</string>
     <string name="uninstall_exit_info">It seems that the uninstallation is finished. Now you can reboot your device and see whether it works.</string>
     <string name="adb_through_wifi">Adb through WIFI</string>
-    <string name="get_adb_through_wifi_state_failed">Get Adb through wifi state failed.</string>
+
 </resources>
