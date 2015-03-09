@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.StringRes;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
 
@@ -49,12 +51,39 @@ public class MainActivity extends ActionBarActivity {
             getFragmentManager().beginTransaction().add(R.id.container, mFragment).commit();
         }
 
-        //check root permission
+        Debug.setDebug(Conf.LOG_DEBUG_INFO_ENABLED);
 
-        //check install path
-        if (Utils.isAppInstallInData(this)) {
-            InstallerActivity.launch(this);
-            finish();
+        //check root permission and install path
+        new CheckTask().execute();
+
+    }
+
+    private class CheckTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return Shell.SU.available();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (!result) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(R.string.boot_check_root_failed_info)
+                        .setCancelable(false)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
+            } else {
+                //check install path
+                if (Utils.isAppInstallInData(MainActivity.this)) {
+                    InstallerActivity.launch(MainActivity.this);
+                    finish();
+                }
+            }
         }
     }
 
