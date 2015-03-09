@@ -1,12 +1,15 @@
 package me.yugy.github.developquicksetting;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.IntDef;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 
 import java.io.IOException;
@@ -63,6 +66,28 @@ public class DevelopSettingsService extends IntentService {
                     break;
                 case ACTION_SET_ADB_THROUGH_WIFI:
                     refreshUIState(DeveloperSettings.toggleAdbThroughWifi());
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    if (DeveloperSettings.isAdbThroughWifiEnabled()) {
+                        String port = DeveloperSettings.getAdbThroughWifiPort();
+                        String wifiIp = DeveloperSettings.getWifiIp();
+                        if (port.equals("-1") || port.length() == 0 || wifiIp == null) {
+                            return;
+                        }
+                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.ic_adb_wifi_enabled)
+                                .setContentTitle(getString(R.string.adb_through_wifi_enabled))
+                                .setContentText(wifiIp + ":" + port);
+                        Intent notificationIntent = new Intent(this, MainActivity.class);
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                        stackBuilder.addParentStack(MainActivity.class);
+                        stackBuilder.addNextIntent(notificationIntent);
+                        PendingIntent resultPendingIntent = stackBuilder
+                                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mBuilder.setContentIntent(resultPendingIntent);
+                        notificationManager.notify(Conf.NOTIFICATION_ID, mBuilder.build());
+                    } else {
+                        notificationManager.cancel(Conf.NOTIFICATION_ID);
+                    }
                     break;
             }
         } catch (IOException | InterruptedException | NullPointerException e) {

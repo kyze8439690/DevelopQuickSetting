@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  */
 public class DeveloperSettings {
 
-    private static final boolean LOG_ENABLED = true;
+    private static final boolean LOG_ENABLED = false;
 
     public static boolean isAdbEnabled(Context context) {
         if (context == null) {
