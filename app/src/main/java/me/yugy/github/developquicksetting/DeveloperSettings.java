@@ -90,26 +90,23 @@ public class DeveloperSettings {
     }
 
     public static boolean setDebugLayoutEnabled(boolean enabled) throws IOException, InterruptedException {
-        List<String> result = Shell.SU.run(new String[]{
-                "setprop " + Property.DEBUG_LAYOUT_PROPERTY + " " + (enabled ? "true" : "false")
-        });
+        List<String> result = Shell.SU.run(
+                "setprop " + Property.DEBUG_LAYOUT_PROPERTY + " " + (enabled ? "true" : "false"));
         pokeSystemProperties();
         return result != null;
     }
 
     public static boolean setShowOverdrawEnabled(boolean enabled) throws IOException, InterruptedException {
-        List<String> result = Shell.SU.run(new String[]{
+        List<String> result = Shell.SU.run(
                 "setprop " + Property.getDebugOverdrawPropertyKey() + " "
-                        + (enabled ? Property.getDebugOverdrawPropertyEnabledValue() : "false")
-        });
+                        + (enabled ? Property.getDebugOverdrawPropertyEnabledValue() : "false"));
         pokeSystemProperties();
         return result != null;
     }
 
     public static boolean setProfileGPURenderingEnabled(boolean enabled) throws IOException, InterruptedException {
-        List<String> result = Shell.SU.run(new String[]{
-                "setprop " + Property.PROFILE_PROPERTY + " " + (enabled ? "visual_bars" : "false")
-        });
+        List<String> result = Shell.SU.run(
+                "setprop " + Property.PROFILE_PROPERTY + " " + (enabled ? "visual_bars" : "false"));
         pokeSystemProperties();
         return result != null;
     }
