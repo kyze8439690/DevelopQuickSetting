@@ -5,15 +5,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import eu.chainfire.libsuperuser.Shell;
 
 public class InstallerActivity extends ActionBarActivity {
 
@@ -31,53 +35,55 @@ public class InstallerActivity extends ActionBarActivity {
 
     @OnClick(R.id.install_and_reboot)
     void installAndReboot() {
-        ProgressDialog dialog = new ProgressDialog(this);
+        final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.setMessage(getString(R.string.require_root_permission));
         dialog.show();
 
-        try {
-            String sourcePath = Utils.getApkInstallPath(this);
-            String targetPath = getTargetFilePath();
-            //get root permission
-            Process process = Runtime.getRuntime().exec("su");
-            DataOutputStream output = new DataOutputStream(process.getOutputStream());
-            //mount /system
-            output.writeBytes("mount -o rw,remount /system\n");
-            //move the apk file to /system/app or /system/priv-app
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //make dir
-                output.writeBytes("mkdir -p /system/priv-app/DevelopQuickSetting\n");
-            }
-            output.writeBytes("cat " + sourcePath + " > " + targetPath + "\n"); //On some device, 'mv' is not allowed to copy file from /data to /system, use 'cat' instead
-            //change the file permission to 644
-            output.writeBytes("chmod 644 " + targetPath + "\n");
-            //soft reboot device
-            output.writeBytes("pkill zygote\n");
-            //exit su
-            output.writeBytes("exit\n");
-            output.flush();
-            process.waitFor();
-            output.close();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        new AsyncTask<Void, Void, Void>() {
 
-        //if the code below can be run, means that device do not have the 'pkill' command, try to hard reset.
-        try {
-            Process process = Runtime.getRuntime().exec("su");
-            DataOutputStream output = new DataOutputStream(process.getOutputStream());
-            //reboot
-            output.writeBytes("reboot\n");
-            //exit su
-            output.writeBytes("exit\n");
-            output.flush();
-            process.waitFor();
-            output.close();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+            @Override
+            protected Void doInBackground(Void... params) {
+                String sourcePath = Utils.getApkInstallPath(InstallerActivity.this);
+                String targetPath = getTargetFilePath();
+                List<String> commands = new ArrayList<>();
+                commands.add("mount -o rw,remount /system");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    commands.add("mkdir -p /system/priv-app/DevelopQuickSetting");
+                }
+                commands.add("cat " + sourcePath + " > " + targetPath);     //On some device, 'mv' is not allowed to copy file from /data to /system, use 'cat' instead
+                commands.add("chmod 644 " + targetPath);
+                commands.add("pkill zygote");
+                Shell.SU.run(commands);
+
+                //if the code below can be run, means that device do not have the 'pkill' command, try to hard reset.
+                Shell.SU.run("reboot");
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                dialog.dismiss();
+                new AlertDialog.Builder(InstallerActivity.this)
+                        .setCancelable(true)
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                finish();
+                            }
+                        })
+                        .setMessage(R.string.install_exit_info)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+            }
+        }.execute();
+
 
         //if the code below can be run, means that device run 'su reboot' failed, cause user have to reboot device manually.
         dialog.dismiss();

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.StringRes;
@@ -22,10 +23,13 @@ import com.crashlytics.android.Crashlytics;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import eu.chainfire.libsuperuser.Debug;
+import eu.chainfire.libsuperuser.Shell;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -48,10 +52,39 @@ public class MainActivity extends ActionBarActivity {
             getFragmentManager().beginTransaction().add(R.id.container, mFragment).commit();
         }
 
-        //check install path
-        if (Utils.isAppInstallInData(this)) {
-            InstallerActivity.launch(this);
-            finish();
+        Debug.setDebug(Conf.LOG_DEBUG_INFO_ENABLED);
+
+        //check root permission and install path
+        new CheckTask().execute();
+
+    }
+
+    private class CheckTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return Shell.SU.available();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (!result) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(R.string.boot_check_root_failed_info)
+                        .setCancelable(false)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
+            } else {
+                //check install path
+                if (Utils.isAppInstallInData(MainActivity.this)) {
+                    InstallerActivity.launch(MainActivity.this);
+                    finish();
+                }
+            }
         }
     }
 
@@ -148,57 +181,43 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void uninstall() {
-        ProgressDialog dialog = new ProgressDialog(this);
+        final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
-        try {
-            String apkPath = Utils.getApkInstallPath(this);
-            //get root permission
-            Process process = Runtime.getRuntime().exec("su");
-            DataOutputStream output = new DataOutputStream(process.getOutputStream());
-            //mount /system
-            output.writeBytes("mount -o rw,remount /system\n");
-            //delete apk file
-            output.writeBytes("rm " + apkPath + "\n");
-            //soft reboot device
-            output.writeBytes("pkill zygote\n");
-            //exit su
-            output.writeBytes("exit\n");
-            output.flush();
-            process.waitFor();
-            output.close();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        //if the code below can be run, means that device do not have the 'pkill' command, try to hard reset.
-        try {
-            Process process = Runtime.getRuntime().exec("su");
-            DataOutputStream output = new DataOutputStream(process.getOutputStream());
-            //reboot
-            output.writeBytes("reboot\n");
-            //exit su
-            output.writeBytes("exit\n");
-            output.flush();
-            process.waitFor();
-            output.close();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        new AsyncTask<Void, Void, Void>() {
 
-        //if the code below can be run, means that device run 'su reboot' failed, cause user have to reboot device manually.
-        dialog.dismiss();
-        AlertDialog exitDialog = new AlertDialog.Builder(this)
-                .setCancelable(true)
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        finish();
-                    }
-                })
-                .setMessage(R.string.uninstall_exit_info)
-                .create();
-        exitDialog.show();
+            @Override
+            protected Void doInBackground(Void... params) {
+                String apkPath = Utils.getApkInstallPath(MainActivity.this);
+                List<String> commands = new ArrayList<>();
+                commands.add("mount -o rw,remount /system");
+                commands.add("rm " + apkPath);
+                commands.add("pkill zygote");
+                Shell.SU.run(commands);
+
+                //if the code below can be run, means that device do not have the 'pkill' command, try to hard reset.
+                Shell.SU.run("reboot");
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                //if the code below can be run, means that device run 'su reboot' failed, cause user have to reboot device manually.
+                dialog.dismiss();
+                new AlertDialog.Builder(MainActivity.this)
+                        .setCancelable(true)
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                finish();
+                            }
+                        })
+                        .setMessage(R.string.uninstall_exit_info)
+                        .show();
+            }
+        }.execute();
+
     }
 }

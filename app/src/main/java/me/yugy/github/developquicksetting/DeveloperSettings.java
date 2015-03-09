@@ -10,8 +10,11 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import eu.chainfire.libsuperuser.Shell;
 
 /**
  * DeveloperSetting class, method may block ui thread
@@ -87,43 +90,25 @@ public class DeveloperSettings {
     }
 
     public static boolean setDebugLayoutEnabled(boolean enabled) throws IOException, InterruptedException {
-        Process process = Runtime.getRuntime().exec("su");
-        DataOutputStream output = new DataOutputStream(process.getOutputStream());
-        output.writeBytes("setprop " + Property.DEBUG_LAYOUT_PROPERTY + " " + (enabled ? "true" : "false") + "\n");
-        output.writeBytes("exit\n");
-        output.flush();
-        process.waitFor();
-        output.close();
-        boolean result = process.exitValue() == 0;
+        List<String> result = Shell.SU.run(
+                "setprop " + Property.DEBUG_LAYOUT_PROPERTY + " " + (enabled ? "true" : "false"));
         pokeSystemProperties();
-        return result;
+        return result != null;
     }
 
     public static boolean setShowOverdrawEnabled(boolean enabled) throws IOException, InterruptedException {
-        Process process = Runtime.getRuntime().exec("su");
-        DataOutputStream output = new DataOutputStream(process.getOutputStream());
-        output.writeBytes("setprop " + Property.getDebugOverdrawPropertyKey() + " "
-                + (enabled ? Property.getDebugOverdrawPropertyEnabledValue() : "false") + "\n");
-        output.writeBytes("exit\n");
-        output.flush();
-        process.waitFor();
-        output.close();
-        boolean result = process.exitValue() == 0;
+        List<String> result = Shell.SU.run(
+                "setprop " + Property.getDebugOverdrawPropertyKey() + " "
+                        + (enabled ? Property.getDebugOverdrawPropertyEnabledValue() : "false"));
         pokeSystemProperties();
-        return result;
+        return result != null;
     }
 
     public static boolean setProfileGPURenderingEnabled(boolean enabled) throws IOException, InterruptedException {
-        Process process = Runtime.getRuntime().exec("su");
-        DataOutputStream output = new DataOutputStream(process.getOutputStream());
-        output.writeBytes("setprop " + Property.PROFILE_PROPERTY + " " + (enabled ? "visual_bars" : "false") + "\n");
-        output.writeBytes("exit\n");
-        output.flush();
-        process.waitFor();
-        output.close();
-        boolean result = process.exitValue() == 0;
+        List<String> result = Shell.SU.run(
+                "setprop " + Property.PROFILE_PROPERTY + " " + (enabled ? "visual_bars" : "false"));
         pokeSystemProperties();
-        return result;
+        return result != null;
     }
 
     public static boolean setImmediatelyDestroyActivities(Context context, boolean enabled)
@@ -145,16 +130,13 @@ public class DeveloperSettings {
     }
 
     public static boolean setAdbThroughWIFIEnabled(boolean enabled) throws IOException, InterruptedException {
-        Process process = Runtime.getRuntime().exec("su");
-        DataOutputStream output = new DataOutputStream(process.getOutputStream());
-        output.writeBytes("setprop " + Property.ADB_WIFI_PORT + " " + (enabled ? Conf.ADB_WIFI_PORT : -1) + "\n");
-        output.writeBytes("stop adbd\n");
-        output.writeBytes("start adbd\n");
-        output.writeBytes("exit\n");
-        output.flush();
-        process.waitFor();
-        output.close();
-        return process.exitValue() == 0;
+        List<String> result = Shell.SU.run(new String[]{
+                "setprop " + Property.ADB_WIFI_PORT + " " + (enabled ? Conf.ADB_WIFI_PORT : -1),
+                "stop adbd",
+                "start adbd"
+        });
+        pokeSystemProperties();
+        return result != null;
     }
 
     public static boolean toggleDebugLayout() throws IOException, InterruptedException {
@@ -182,17 +164,13 @@ public class DeveloperSettings {
     }
 
     public static String getWifiIp() throws IOException {
-        Process process = Runtime.getRuntime().exec("ip -f inet addr show wlan0");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        StringBuilder builder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
+        List<String> result = Shell.SH.run("ip -f inet addr show wlan0");
+        if (result == null || result.size() < 2 || result.get(1).length() < 1) {
+            return null;
         }
-        String result = builder.toString();
         Pattern pattern = Pattern.compile("inet ([.0-9]+)");
-        Matcher matcher = pattern.matcher(result);
-        if (result.length() >= 1 && matcher.find(1)) {
+        Matcher matcher = pattern.matcher(result.get(1));
+        if (matcher.find(1)) {
             return matcher.group(1);
         } else {
             return null;                    //maybe because wifi is not opened.

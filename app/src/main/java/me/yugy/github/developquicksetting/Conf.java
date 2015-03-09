@@ -1,5 +1,7 @@
 package me.yugy.github.developquicksetting;
 
+import com.android.layoutlib.bridge.util.Debug;
+
 public class Conf {
 
     public static final int SNACKBAR_SHOW_DURATION = 3000; //ms
@@ -10,4 +12,5 @@ public class Conf {
     public static final String ACTION_REFRESH_UI = "ACTION_REFRESH_UI";
 
     public static final int NOTIFICATION_ID = 523483845;
+
 }
