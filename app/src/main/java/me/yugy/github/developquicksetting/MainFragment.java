@@ -134,10 +134,10 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                     mDisplayOverdrawPreference.setChecked(result[2]);
                     mProfileGPURenderingPreference.setChecked(result[3]);
                     mImmediatelyDestroyActivitiesPreference.setChecked(result[4]);
-                    mAdbThroughWifiPreference.setChecked(result[5]);
-                    if (mAdbThroughWifiPreference.isChecked()) {
+                    if (result[5]) {
                         new RefreshAdbThroughWifiStateTask().execute();
                     } else {
+                        mAdbThroughWifiPreference.setChecked(false);
                         mAdbThroughWifiPreference.setSummary("");
                     }
                 } else {
@@ -167,8 +167,9 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         @Override
         protected void onPostExecute(String s) {
             if (s == null) {
-                mAdbThroughWifiPreference.setSummary(R.string.get_adb_through_wifi_state_failed);
+                mAdbThroughWifiPreference.setChecked(false);
             } else {
+                mAdbThroughWifiPreference.setChecked(true);
                 mAdbThroughWifiPreference.setSummary(s);
             }
         }

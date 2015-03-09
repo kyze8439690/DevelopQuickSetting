@@ -83,7 +83,7 @@ public class DeveloperSettings {
         if (LOG_ENABLED) {
             Utils.log("isAdbThroughWifiEnabled spends " + (System.currentTimeMillis() - startTime) + "ms.");
         }
-        return result.matches("[0-9]+");
+        return result.matches("[0-9]+") && getWifiIp() != null;
     }
 
     public static boolean setDebugLayoutEnabled(boolean enabled) throws IOException, InterruptedException {
@@ -192,7 +192,7 @@ public class DeveloperSettings {
         String result = builder.toString();
         Pattern pattern = Pattern.compile("inet ([.0-9]+)");
         Matcher matcher = pattern.matcher(result);
-        if (matcher.find(1)) {
+        if (result.length() >= 1 && matcher.find(1)) {
             return matcher.group(1);
         } else {
             return null;                    //maybe because wifi is not opened.
