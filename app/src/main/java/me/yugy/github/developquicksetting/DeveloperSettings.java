@@ -168,7 +168,7 @@ public class DeveloperSettings {
 
     public static String getWifiIp() throws IOException {
         List<String> result = Shell.SH.run("ip -f inet addr show wlan0");
-        if (result.size() < 2) {
+        if (result == null || result.size() < 2) {
             return null;
         }
         Pattern pattern = Pattern.compile("inet ([.0-9]+)");
