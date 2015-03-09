@@ -1,7 +1,10 @@
 package me.yugy.github.developquicksetting;
 
 import android.content.Context;
+import android.os.SystemProperties;
 import android.provider.Settings;
+
+import com.crashlytics.android.Crashlytics;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -16,7 +19,7 @@ import java.util.regex.Pattern;
  */
 public class DeveloperSettings {
 
-    private static final boolean LOG_ENABLED = false;
+    private static final boolean LOG_ENABLED = true;
 
     public static boolean isAdbEnabled(Context context) {
         if (context == null) {
@@ -32,14 +35,7 @@ public class DeveloperSettings {
 
     public static boolean isDebugLayoutEnabled() throws IOException {
         long startTime = System.currentTimeMillis();
-        Process process = Runtime.getRuntime().exec("getprop " + Property.DEBUG_LAYOUT_PROPERTY);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        StringBuilder builder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-        }
-        String result = builder.toString();
+        String result = SystemProperties.get(Property.DEBUG_LAYOUT_PROPERTY, "false");
         if (LOG_ENABLED) {
             Utils.log("isDebugLayoutEnabled spends " + (System.currentTimeMillis() - startTime) + "ms.");
         }
@@ -48,14 +44,7 @@ public class DeveloperSettings {
 
     public static boolean isShowOverdrawEnabled() throws IOException {
         long startTime = System.currentTimeMillis();
-        Process process = Runtime.getRuntime().exec("getprop " + Property.getDebugOverdrawPropertyKey());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        StringBuilder builder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-        }
-        String result = builder.toString();
+        String result = SystemProperties.get(Property.getDebugOverdrawPropertyKey(), "false");
         if (LOG_ENABLED) {
             Utils.log("isShowOverdrawEnabled spends " + (System.currentTimeMillis() - startTime) + "ms.");
         }
@@ -64,14 +53,7 @@ public class DeveloperSettings {
 
     public static boolean isShowProfileGPURendering() throws IOException {
         long startTime = System.currentTimeMillis();
-        Process process = Runtime.getRuntime().exec("getprop " + Property.PROFILE_PROPERTY);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        StringBuilder builder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-        }
-        String result = builder.toString();
+        String result = SystemProperties.get(Property.PROFILE_PROPERTY, "false");
         if (LOG_ENABLED) {
             Utils.log("isShowProfileGPURendering spends " + (System.currentTimeMillis() - startTime) + "ms.");
         }
@@ -92,14 +74,7 @@ public class DeveloperSettings {
     }
 
     public static String getAdbThroughWifiPort() throws IOException {
-        Process process = Runtime.getRuntime().exec("getprop " + Property.ADB_WIFI_PORT);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        StringBuilder builder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-        }
-        return builder.toString();
+        return SystemProperties.get(Property.ADB_WIFI_PORT, "-1");
     }
 
     public static boolean isAdbThroughWifiEnabled() throws IOException {
