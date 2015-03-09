@@ -26,6 +26,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import eu.chainfire.libsuperuser.Shell;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -47,6 +48,8 @@ public class MainActivity extends ActionBarActivity {
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction().add(R.id.container, mFragment).commit();
         }
+
+        //check root permission
 
         //check install path
         if (Utils.isAppInstallInData(this)) {
