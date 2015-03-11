@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -182,6 +183,18 @@ public class MainActivity extends ActionBarActivity {
 
                             }
                         }).show();
+                return true;
+            case R.id.about:
+                WebView webView = new WebView(this);
+                new AlertDialog.Builder(this)
+                        .setView(webView)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).show();
+                webView.loadUrl("file:///android_asset/readme.html");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
