@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.IOException;
 
 public class DevelopWidgetProvider extends AppWidgetProvider {
@@ -16,12 +18,14 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+        Crashlytics.start(context);
         Utils.log("onAppWidgetOptionsChanged");
         refreshWidgets(context, appWidgetManager, appWidgetId);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Crashlytics.start(context);
         Utils.log("onUpdate");
         refreshWidgets(context, appWidgetManager, appWidgetIds);
     }
@@ -54,6 +58,7 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
                         DeveloperSettings.isAdbThroughWifiEnabled()
                 };
             } catch (IOException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
                 return null;
             }

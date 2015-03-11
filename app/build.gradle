@@ -36,6 +36,7 @@ android {
 
 dependencies {
     provided files('libs/layoutlib.jar')
+    compile files('libs/libGoogleAnalyticsServices.jar')
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.crashlytics.android:crashlytics:1.+'

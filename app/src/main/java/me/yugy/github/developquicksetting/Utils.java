@@ -6,6 +6,8 @@ import android.support.annotation.StringRes;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,6 +22,7 @@ public class Utils {
         try {
             return context.getPackageManager().getApplicationInfo(context.getPackageName(), 0).sourceDir;
         } catch (PackageManager.NameNotFoundException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             return "";
         }

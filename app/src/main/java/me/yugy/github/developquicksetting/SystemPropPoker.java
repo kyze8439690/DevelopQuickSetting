@@ -6,6 +6,8 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -29,8 +31,8 @@ class SystemPropPoker extends AsyncTask<Void, Void, Void> {
                     final int SYSPROPS_TRANSACTION = ('_'<<24)|('S'<<16)|('P'<<8)|'R'; //copy from source code in android.os.IBinder.java
                     try {
                         obj.transact(SYSPROPS_TRANSACTION, data, null, 0);
-                    } catch (RemoteException ignored) {
                     } catch (Exception e) {
+                        Crashlytics.logException(e);
                         Log.i(TAG, "Someone wrote a bad service '" + service
                                 + "' that doesn't like to be poked: " + e);
                     }
@@ -38,6 +40,7 @@ class SystemPropPoker extends AsyncTask<Void, Void, Void> {
                 }
             }
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         }
         return null;

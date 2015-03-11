@@ -13,6 +13,8 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.IOException;
 
 public class MainFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener{
@@ -118,6 +120,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                     Utils.log("RefreshPreferencesStateTask spends " + (System.currentTimeMillis() - startTime) + "ms in background.");
                     return result;
                 } catch (IOException e) {
+                    Crashlytics.logException(e);
                     e.printStackTrace();
                     return null;
                 }
@@ -159,6 +162,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
                 }
                 return wifiIp + ":" + port;
             } catch (IOException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
                 return null;
             }

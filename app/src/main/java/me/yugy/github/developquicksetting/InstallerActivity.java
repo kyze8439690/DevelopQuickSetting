@@ -10,6 +10,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.analytics.tracking.android.EasyTracker;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +32,8 @@ public class InstallerActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
+        EasyTracker.getInstance(this).activityStart(this);
         setContentView(R.layout.activity_installer);
         ButterKnife.inject(this);
     }

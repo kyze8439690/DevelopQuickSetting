@@ -12,6 +12,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.IOException;
 
 public class DevelopSettingsService extends IntentService {
@@ -44,6 +46,12 @@ public class DevelopSettingsService extends IntentService {
 
     public DevelopSettingsService() {
         super("WidgetService");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Crashlytics.start(this);
     }
 
     @Override
@@ -91,6 +99,7 @@ public class DevelopSettingsService extends IntentService {
                     break;
             }
         } catch (IOException | InterruptedException | NullPointerException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
             refreshUIState(false);
         }

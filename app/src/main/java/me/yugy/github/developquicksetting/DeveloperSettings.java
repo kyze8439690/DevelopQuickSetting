@@ -3,8 +3,12 @@ package me.yugy.github.developquicksetting;
 import android.content.Context;
 import android.os.SystemProperties;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.MapBuilder;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -90,6 +94,10 @@ public class DeveloperSettings {
     }
 
     public static boolean setDebugLayoutEnabled(boolean enabled) throws IOException, InterruptedException {
+        Crashlytics.log(Behaviour.SET_DEBUG_LAYOUT);
+        EasyTracker tracker = EasyTracker.getInstance(Application.getInstance());
+        tracker.set(Fields.customMetric(1), "1");
+        tracker.send(MapBuilder.createAppView().build());
         List<String> result = Shell.SU.run(
                 "setprop " + Property.DEBUG_LAYOUT_PROPERTY + " " + (enabled ? "true" : "false"));
         pokeSystemProperties();
@@ -97,6 +105,10 @@ public class DeveloperSettings {
     }
 
     public static boolean setShowOverdrawEnabled(boolean enabled) throws IOException, InterruptedException {
+        Crashlytics.log(Behaviour.SHOW_OVERDRAW);
+        EasyTracker tracker = EasyTracker.getInstance(Application.getInstance());
+        tracker.set(Fields.customMetric(2), "1");
+        tracker.send(MapBuilder.createAppView().build());
         List<String> result = Shell.SU.run(
                 "setprop " + Property.getDebugOverdrawPropertyKey() + " "
                         + (enabled ? Property.getDebugOverdrawPropertyEnabledValue() : "false"));
@@ -105,6 +117,10 @@ public class DeveloperSettings {
     }
 
     public static boolean setProfileGPURenderingEnabled(boolean enabled) throws IOException, InterruptedException {
+        Crashlytics.log(Behaviour.PROFILE_GPU_RENDERING);
+        EasyTracker tracker = EasyTracker.getInstance(Application.getInstance());
+        tracker.set(Fields.customMetric(3), "1");
+        tracker.send(MapBuilder.createAppView().build());
         List<String> result = Shell.SU.run(
                 "setprop " + Property.PROFILE_PROPERTY + " " + (enabled ? "visual_bars" : "false"));
         pokeSystemProperties();
@@ -122,6 +138,10 @@ public class DeveloperSettings {
 //                Method setAlwaysFinishMethod = activityManagerNativeClass.getMethod("setAlwaysFinish", boolean.class);
 //                setAlwaysFinishMethod.invoke(activityManagerNativeInstance, isChecked);
 
+        Crashlytics.log(Behaviour.IMMEDIATELY_DESTROY_ACTIVITIES);
+        EasyTracker tracker = EasyTracker.getInstance(Application.getInstance());
+        tracker.set(Fields.customMetric(4), "1");
+        tracker.send(MapBuilder.createAppView().build());
         boolean result = Settings.Global.putInt(
                 context.getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES,
                 enabled ? 1 : 0);
@@ -130,6 +150,10 @@ public class DeveloperSettings {
     }
 
     public static boolean setAdbThroughWIFIEnabled(boolean enabled) throws IOException, InterruptedException {
+        Crashlytics.log(Log.INFO, "Behaviour", Behaviour.ADB_WIFI);
+        EasyTracker tracker = EasyTracker.getInstance(Application.getInstance());
+        tracker.set(Fields.customMetric(5), "1");
+        tracker.send(MapBuilder.createAppView().build());
         List<String> result = Shell.SU.run(new String[]{
                 "setprop " + Property.ADB_WIFI_PORT + " " + (enabled ? Conf.ADB_WIFI_PORT : -1),
                 "stop adbd",

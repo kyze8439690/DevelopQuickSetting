@@ -20,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
+        EasyTracker.getInstance(this).activityStart(this);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
@@ -219,5 +221,11 @@ public class MainActivity extends ActionBarActivity {
             }
         }.execute();
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
     }
 }
