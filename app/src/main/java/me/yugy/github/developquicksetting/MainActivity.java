@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.MapBuilder;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -77,6 +79,10 @@ public class MainActivity extends ActionBarActivity {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                Crashlytics.log(Behaviour.CHECK_ROOT_PERMISSION_FAILED);
+                                EasyTracker tracker = EasyTracker.getInstance(MainActivity.this);
+                                tracker.set(Fields.customMetric(6), "1");
+                                tracker.send(MapBuilder.createAppView().build());
                                 finish();
                             }
                         }).show();

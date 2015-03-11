@@ -12,6 +12,8 @@ import android.support.v7.app.ActionBarActivity;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.MapBuilder;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -69,6 +71,7 @@ public class InstallerActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(Void aVoid) {
+                //if the code below can be run, means that device run 'su reboot' failed, cause user have to reboot device manually.
                 dialog.dismiss();
                 new AlertDialog.Builder(InstallerActivity.this)
                         .setCancelable(true)
@@ -82,33 +85,15 @@ public class InstallerActivity extends ActionBarActivity {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                Crashlytics.log(Behaviour.INSTALL_REBOOT_FAILED);
+                                EasyTracker tracker = EasyTracker.getInstance(InstallerActivity.this);
+                                tracker.set(Fields.customMetric(6), "1");
+                                tracker.send(MapBuilder.createAppView().build());
                             }
                         })
                         .show();
             }
         }.execute();
-
-
-        //if the code below can be run, means that device run 'su reboot' failed, cause user have to reboot device manually.
-        dialog.dismiss();
-        AlertDialog exitDialog = new AlertDialog.Builder(this)
-                .setCancelable(true)
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        finish();
-                    }
-                })
-                .setMessage(R.string.install_exit_info)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .create();
-        exitDialog.show();
     }
 
     private String getTargetFilePath() {
