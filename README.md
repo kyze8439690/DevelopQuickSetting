@@ -1,5 +1,6 @@
 #DevelopQuickSetting
--------------
+
+[![Get it on Google Play](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](https://play.google.com/store/apps/details?id=me.yugy.github.developquicksetting)
 
 <img src="https://raw.githubusercontent.com/kyze8439690/DevelopQuickSetting/master/screenshot.png"  width="270" height="480">
 
