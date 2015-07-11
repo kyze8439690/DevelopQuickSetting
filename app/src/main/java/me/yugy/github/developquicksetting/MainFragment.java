@@ -11,6 +11,8 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
@@ -35,7 +37,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
 
         mRefreshUIReceiver = new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onReceive(@NonNull Context context, @NonNull Intent intent) {
                 Utils.log("RefreshUIReceiver onReceive");
                 removePreferencesListener();
                 updatePreferencesState();
@@ -106,7 +108,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
     private class RefreshPreferencesStateTask extends AsyncTask<Void, Void, boolean[]> {
 
         @Override
-        protected boolean[] doInBackground(Void... params) {
+        protected boolean[] doInBackground(@NonNull Void... params) {
             if (getActivity() != null) {
                 try {
                     long startTime = System.currentTimeMillis();
@@ -129,10 +131,10 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         }
 
         @Override
-        protected void onPostExecute(boolean[] result) {
+        protected void onPostExecute(@Nullable boolean[] result) {
             if (getActivity() != null) {
                 if (result != null) {
-                    setOtherPreferencesEnabled(result[0]);
+//                    setOtherPreferencesEnabled(result[0]);
                     mLayoutBorderPreference.setChecked(result[1]);
                     mDisplayOverdrawPreference.setChecked(result[2]);
                     mProfileGPURenderingPreference.setChecked(result[3]);
@@ -153,7 +155,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
     private class RefreshAdbThroughWifiStateTask extends AsyncTask<Void, Void, String> {
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected String doInBackground(@NonNull Void... params) {
             try {
                 String port = DeveloperSettings.getAdbThroughWifiPort();
                 String wifiIp = DeveloperSettings.getWifiIp();
@@ -169,7 +171,7 @@ public class MainFragment extends PreferenceFragment implements Preference.OnPre
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(@Nullable String s) {
             if (s == null) {
                 mAdbThroughWifiPreference.setChecked(false);
             } else {

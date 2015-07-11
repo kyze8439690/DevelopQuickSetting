@@ -1,7 +1,5 @@
 package me.yugy.github.developquicksetting;
 
-import com.android.layoutlib.bridge.util.Debug;
-
 public class Conf {
 
     public static final int SNACKBAR_SHOW_DURATION = 3000; //ms

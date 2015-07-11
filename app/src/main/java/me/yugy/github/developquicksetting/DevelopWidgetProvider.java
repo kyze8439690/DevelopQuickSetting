@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -48,7 +49,7 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
         }
 
         @Override
-        protected boolean[] doInBackground(Void... params) {
+        protected boolean[] doInBackground(@NonNull Void... params) {
             try {
                 return new boolean[] {
                         DeveloperSettings.isDebugLayoutEnabled(),
@@ -65,7 +66,7 @@ public class DevelopWidgetProvider extends AppWidgetProvider {
         }
 
         @Override
-        protected void onPostExecute(boolean[] results) {
+        protected void onPostExecute(@NonNull boolean[] results) {
             for (int appWidgetId : mAppWidgetIds) {
                 RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.appwidget);
                 //update widget state

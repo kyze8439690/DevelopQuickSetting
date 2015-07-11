@@ -8,8 +8,9 @@ import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,8 +26,6 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.Fields;
 import com.google.analytics.tracking.android.MapBuilder;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +35,10 @@ import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     private MainFragment mFragment;
+
     @InjectView(R.id.snackbar) TextView mSnackBar;
 
     @Override
@@ -67,19 +67,19 @@ public class MainActivity extends ActionBarActivity {
     private class CheckTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground(@NonNull Void... params) {
             return Shell.SU.available();
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(@NonNull Boolean result) {
             if (!result) {
                 new AlertDialog.Builder(MainActivity.this)
                         .setMessage(R.string.boot_check_root_failed_info)
                         .setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(@NonNull DialogInterface dialog, int which) {
                                 Crashlytics.log(Behaviour.CHECK_ROOT_PERMISSION_FAILED);
                                 EasyTracker tracker = EasyTracker.getInstance(MainActivity.this);
                                 tracker.set(Fields.customMetric(6), "1");
@@ -87,12 +87,12 @@ public class MainActivity extends ActionBarActivity {
                                 finish();
                             }
                         }).show();
-            } else {
+//            } else {
                 //check install path
-                if (Utils.isAppInstallInData(MainActivity.this)) {
-                    InstallerActivity.launch(MainActivity.this);
-                    finish();
-                }
+//                if (Utils.isAppInstallInData(MainActivity.this)) {
+//                    InstallerActivity.launch(MainActivity.this);
+//                    finish();
+//                }
             }
         }
     }
@@ -166,31 +166,31 @@ public class MainActivity extends ActionBarActivity {
                     showSnackBar(R.string.can_not_open_developer_setting);
                 }
                 return true;
-            case R.id.uninstall:
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.uninstall_info)
-                        .setTitle(R.string.warning)
-                        .setPositiveButton(R.string.uninstall_and_reboot, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                uninstall();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        }).show();
-                return true;
+//            case R.id.uninstall:
+//                new AlertDialog.Builder(this)
+//                        .setMessage(R.string.uninstall_info)
+//                        .setTitle(R.string.warning)
+//                        .setPositiveButton(R.string.uninstall_and_reboot, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(@NonNull DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                                uninstall();
+//                            }
+//                        })
+//                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(@NonNull DialogInterface dialog, int which) {
+//
+//                            }
+//                        }).show();
+//                return true;
             case R.id.about:
                 WebView webView = new WebView(this);
                 new AlertDialog.Builder(this)
                         .setView(webView)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(@NonNull DialogInterface dialog, int which) {
 
                             }
                         }).show();
@@ -210,7 +210,7 @@ public class MainActivity extends ActionBarActivity {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Void doInBackground(@NonNull Void... params) {
                 String apkPath = Utils.getApkInstallPath(MainActivity.this);
                 List<String> commands = new ArrayList<>();
                 commands.add("mount -o rw,remount /system");
@@ -224,7 +224,7 @@ public class MainActivity extends ActionBarActivity {
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
+            protected void onPostExecute(@NonNull Void aVoid) {
                 //if the code below can be run, means that device run 'su reboot' failed, cause user have to reboot device manually.
                 dialog.dismiss();
                 new AlertDialog.Builder(MainActivity.this)

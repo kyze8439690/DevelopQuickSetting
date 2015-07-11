@@ -29,7 +29,9 @@ public class Utils {
     }
 
     public static boolean isAppInstallInData(Context context) {
-        return getApkInstallPath(context).startsWith("/data/");
+        String sourceDir = getApkInstallPath(context);
+        log("App is install in: " + sourceDir);
+        return sourceDir.startsWith("/data/");
     }
 
     public static void log(String log) {

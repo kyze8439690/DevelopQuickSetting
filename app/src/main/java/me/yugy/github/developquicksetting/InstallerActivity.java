@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -24,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import eu.chainfire.libsuperuser.Shell;
 
-public class InstallerActivity extends ActionBarActivity {
+public class InstallerActivity extends AppCompatActivity {
 
     public static void launch(Context context) {
         Intent intent = new Intent(context, InstallerActivity.class);
@@ -51,13 +53,13 @@ public class InstallerActivity extends ActionBarActivity {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Void doInBackground(@NonNull Void... params) {
                 String sourcePath = Utils.getApkInstallPath(InstallerActivity.this);
                 String targetPath = getTargetFilePath();
                 List<String> commands = new ArrayList<>();
                 commands.add("mount -o rw,remount /system");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    commands.add("mkdir -p /system/priv-app/DevelopQuickSetting");
+                    commands.add("mkdir -p /system/app/DevelopQuickSetting");
                 }
                 commands.add("cat " + sourcePath + " > " + targetPath);     //On some device, 'mv' is not allowed to copy file from /data to /system, use 'cat' instead
                 commands.add("chmod 644 " + targetPath);
@@ -70,7 +72,7 @@ public class InstallerActivity extends ActionBarActivity {
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
+            protected void onPostExecute(@NonNull Void aVoid) {
                 //if the code below can be run, means that device run 'su reboot' failed, cause user have to reboot device manually.
                 dialog.dismiss();
                 new AlertDialog.Builder(InstallerActivity.this)
@@ -84,7 +86,7 @@ public class InstallerActivity extends ActionBarActivity {
                         .setMessage(R.string.install_exit_info)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(@NonNull DialogInterface dialog, int which) {
                                 Crashlytics.log(Behaviour.INSTALL_REBOOT_FAILED);
                                 EasyTracker tracker = EasyTracker.getInstance(InstallerActivity.this);
                                 tracker.set(Fields.customMetric(6), "1");
@@ -98,9 +100,9 @@ public class InstallerActivity extends ActionBarActivity {
 
     private String getTargetFilePath() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return "/system/priv-app/DevelopQuickSetting/DevelopQuickSetting.apk";
+            return "/system/app/DevelopQuickSetting/DevelopQuickSetting.apk";
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return "/system/priv-app/DevelopQuickSetting.apk";
+            return "/system/app/DevelopQuickSetting.apk";
         }
         return "/system/app/DevelopQuickSetting.apk";
     }
