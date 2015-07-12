@@ -6,7 +6,7 @@
 
 ####What can it do?
 
-It provides a simple UI to toggle the developer setting we used the most. You can also place a widget on your launcher, you can use it to toggle setting with a minimum of time. It provides function below:  
+It provides a simple UI to toggle the developer setting we used the most. You can also place a widget on your launcher, use it to toggle setting with a minimum of time.
 
 - Show Layout Border
 - Display Overdraw
@@ -16,7 +16,7 @@ It provides a simple UI to toggle the developer setting we used the most. You ca
 
 ####Why I develop this application?  
 
-This app is for those who develop android application. If you want to toggle developer settings, you have to go to setting -> developer setting -> fling a long list and choose the item you wanted to toggle. This cause us so much time! 
+This app is for those who develop android application. If you want to toggle developer settings, you have to go to setting -> developer setting -> fling a long list and choose the item you wanted to toggle. It spends so much time! 
 
 ####Requirement
 
@@ -28,11 +28,7 @@ This app is for those who develop android application. If you want to toggle dev
 - In order to write system setting, this application must be install under [system/app] to get system permission.
 - When toggle system settings, this application need root permission to run some command.
 
-At last, this app is opensource on [https://github.com/kyze8439690/DevelopQuickSetting](https://github.com/kyze8439690/DevelopQuickSetting).
-
 Author: YangHui <me@yanghui.name>
-
-
 
 ### Tested device info  
 - Nexus 5 running CM12 (android 5.0.2)
