@@ -25,7 +25,6 @@ This app is for those who develop android application. If you want to toggle dev
 
 ####Why it require root permission?
 
-- In order to write system setting, this application must be install under [system/app] to get system permission.
 - When toggle system settings, this application need root permission to run some command.
 
 Author: YangHui <me@yanghui.name>
